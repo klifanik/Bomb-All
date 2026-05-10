@@ -1,3 +1,7 @@
+-- это для игры по локальной сети (функции для клиента)
+
+--[[
+
 local init = require("scripts/init")
 local initOther = require("scripts/init_other")
 local sock = require("scripts/sock")
@@ -93,3 +97,5 @@ function Client.new(ip, port, name, password)
 end
 
 return Client
+
+]]

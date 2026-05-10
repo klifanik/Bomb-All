@@ -16,7 +16,8 @@ function C.click(x, y, btnCode, isTouch)
                 if ButtonAnimation.position == 2 then
                     actionTaken = true
                     fade.state = "out"
-                    fade.level = "choose_server"
+                    --fade.level = "choose_server"
+                    fade.level = "not work"
                 else
                     ButtonAnimation.position = 2
                 end

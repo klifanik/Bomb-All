@@ -1,3 +1,7 @@
+-- это для игры по локальной сети (функции хоста)
+
+--[[
+
 local init = require("scripts/init")
 local initOther = require("scripts/init_other")
 local sock = require("scripts/sock")
@@ -109,3 +113,5 @@ function Server.new(port, password)
 end
 
 return Server
+
+]]

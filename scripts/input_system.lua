@@ -173,7 +173,8 @@ function M.ControlGui(player, joystick, btn, Typecntrl)
                 fade.level = "choose_character"
             elseif ButtonAnimation.position == 2 then
                 fade.state = "out"
-                fade.level = "choose_server"
+                --fade.level = "choose_server"
+                fade.level = "not work"
             end
 
         end

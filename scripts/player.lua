@@ -1,3 +1,7 @@
+-- это для игры по локальной сети (создание игрока)
+
+--[[
+
 local P = {}
 
 function P.newPlayer(playersData, name, id, count)
@@ -55,3 +59,5 @@ function P.newPlayer(playersData, name, id, count)
 end
 
 return P
+
+]]

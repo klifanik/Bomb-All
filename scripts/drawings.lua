@@ -2,6 +2,8 @@ local D = {}
 
 function D.draw(mx, my)
 
+    love.graphics.setFont(normalFont)
+
     if GAME ~= "game" then love.graphics.draw(background_wall, 0, 0, 0, 0.9, 1) end
  
     if GAME == "game" then 
@@ -102,7 +104,12 @@ function D.draw(mx, my)
 
     elseif GAME == "choose_character" then
 
-        if ReadyPlayers == NumberOfPlayers and NumberOfPlayers > 1 then love.graphics.draw(image_play_game, button_play_game.x, button_play_game.y, 0, button_play_game.scale, button_play_game.scale) end
+        if ReadyPlayers == NumberOfPlayers and NumberOfPlayers > 1 then love.graphics.draw(image_play_game, button_play_game.x, button_play_game.y, 0, button_play_game.scale, button_play_game.scale)
+        elseif NumberOfPlayers > 1 then love.graphics.print("ЖДЕМ ПОКА ВСЕ ИГРОКИ БУДУТ ГОТОВЫ", 400, 650, 0, 1) end
+
+        if NumberOfPlayers < 2 then love.graphics.print([[НАЖМИ ЛЮБУЮ КНОПКУ НА ДЖОЙСТИКЕ, КЛАВИАТУРЕ ИЛИ В ЛЮБОМ МЕСТЕ НА ЭКРАНЕ
+        
+                                        ДЛЯ ИГРЫ НУЖНО МИНИМУМ 2 ЧЕЛОВЕКА]], 200, 650, 0, 1) end
 
         local startX = 150
         local spacing = 250
@@ -457,9 +464,14 @@ function D.draw(mx, my)
             else love.graphics.setFont(bigFont); love.graphics.print(p.name, x, yPos - 50); love.graphics.setFont(normalFont)
             end
         end
+    elseif GAME == "not work" then
+        love.graphics.setFont(normalFont)
+        love.graphics.print([[Извините, данная функция находится в разработке,
+но если вы умеете программировать на lua в программе LOVE(love2d), вы
+можете скачать исходный код игры на GitHub, и попытаться помочь в
+разработке игры]], 150, 250, 0, 1.5)
     end
 
-    if myServer then love.graphics.print(myServer.playersCount, 100, 100) end
     love.graphics.setColor(1, 1, 1)
 end
 
