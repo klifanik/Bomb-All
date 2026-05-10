@@ -24,6 +24,9 @@ jobs:
 
       - name: Build APK
         working-directory: build-tools
+        # ВОТ ТУТ МЫ ДОБАВИЛИ ПАМЯТЬ:
+        env:
+          _JAVA_OPTIONS: "-Xmx4g"
         run: chmod +x gradlew && ./gradlew assembleNormal
 
       - name: Upload APK
