@@ -24,7 +24,6 @@ jobs:
 
       - name: Build APK
         working-directory: build-tools
-        # ВОТ ТУТ МЫ ДОБАВИЛИ ПАМЯТЬ:
         env:
           _JAVA_OPTIONS: "-Xmx4g"
         run: chmod +x gradlew && ./gradlew assembleNormal
@@ -33,4 +32,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: BombAll-APK
-          path: build-tools/app/build/outputs/apk/normal/debug/*.apk
+          # ИЗМЕНЕНО: теперь он ищет все файлы .apk во всех папках
+          path: build-tools/app/build/outputs/apk/**/*.apk
