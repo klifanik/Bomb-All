@@ -1,0 +1,22 @@
+name: Build APK
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build APK
+        uses: engineer144/love-actions@v1.4.1
+        with:
+          game_path: game.love # Имя твоего файла
+          bundle_id: com.yourname.game # Уникальный ID (как паспорт игры)
+          game_name: "My Cool Game" # Название игры на телефоне
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-game-apk
+          path: "*.apk"
