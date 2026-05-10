@@ -9,11 +9,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build APK
-        uses: engineer144/love-actions@v1.4.1
+        uses: love2d-community/love-android-action@v1
         with:
-          game_path: BombAll.love # ТВОЁ НАЗВАНИЕ ФАЙЛА
-          bundle_id: com.klifanik.bomball # Твой ID
-          game_name: "Bomb All" # Название игры
+          game_path: BombAll.love
+          bundle_id: com.klifanik.bomball
+          game_name: "Bomb All"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
