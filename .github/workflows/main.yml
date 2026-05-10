@@ -5,10 +5,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout game code
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Setup JDK 17
         uses: actions/setup-java@v4
@@ -16,15 +14,20 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build with Love-Android
-        uses: phithis/love-android-action@v1.4.1
-        with:
-          game_path: BombAll.love
-          bundle_id: com.klifanik.bomball
-          game_name: "Bomb All"
+      - name: Clone Love-Android build tools
+        run: git clone --recurse-submodules https://github.com/love2d/love-android.git build-tools
+
+      - name: Copy game.love to assets
+        run: |
+          mkdir -p build-tools/app/src/main/assets
+          cp BombAll.love build-tools/app/src/main/assets/game.love
+
+      - name: Build APK
+        working-directory: build-tools
+        run: chmod +x gradlew && ./gradlew assembleNormal
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: BombAll-APK
-          path: "**/*.apk"
+          path: build-tools/app/build/outputs/apk/normal/debug/*.apk
