@@ -9,7 +9,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build APK
-        uses: love2d-community/love-android-action@v1
+        uses: love2d-community/love-android-action@v1 # Добавили @v1
         with:
           game_path: BombAll.love
           bundle_id: com.klifanik.bomball
