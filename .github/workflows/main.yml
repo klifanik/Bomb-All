@@ -11,12 +11,12 @@ jobs:
       - name: Build APK
         uses: engineer144/love-actions@v1.4.1
         with:
-          game_path: game.love # Имя твоего файла
-          bundle_id: com.yourname.game # Уникальный ID (как паспорт игры)
-          game_name: "My Cool Game" # Название игры на телефоне
+          game_path: BombAll.love # ТВОЁ НАЗВАНИЕ ФАЙЛА
+          bundle_id: com.klifanik.bomball # Твой ID
+          game_name: "Bomb All" # Название игры
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: my-game-apk
+          name: BombAll-APK
           path: "*.apk"
