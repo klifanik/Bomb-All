@@ -76,6 +76,9 @@ function D.draw(mx, my)
         love.graphics.setColor(1, 1, 1)
  
     elseif GAME == "gui" then 
+        love.graphics.setFont(normalFont)
+        love.graphics.print("v 0.0.1 beta", 1100, 700)
+
         love.graphics.draw(image_play_party, button_play_party.x, button_play_party.y, 0, button_play_party.scale, button_play_party.scale) 
         love.graphics.draw(image_play_local, button_play_local.x, button_play_local.y, 0, button_play_local.scale, button_play_local.scale)
 
@@ -88,7 +91,7 @@ function D.draw(mx, my)
         if ButtonAnimation.position == 1 then ButtonAnimation.anim:draw(ButtonAnimation.Image, button_play_party.x - 12.5, button_play_party.y - 12.5, 0, 4, 4)
         elseif ButtonAnimation.position == 2 then ButtonAnimation.anim:draw(ButtonAnimation.Image, button_play_local.x - 12.5, button_play_local.y - 12.5, 0, 4, 4) end
 
-    elseif GAME == "choose_server" then
+    --[[elseif GAME == "choose_server" then
 
         love.graphics.draw(image_create_server, button_play_create.x, button_play_create.y, 0, button_play_create.scale, button_play_create.scale) 
         love.graphics.draw(image_join_server, button_play_join.x, button_play_join.y, 0, button_play_join.scale, button_play_join.scale)
@@ -101,6 +104,7 @@ function D.draw(mx, my)
 
         if ButtonAnimation.position == 1 then ButtonAnimation.anim:draw(ButtonAnimation.Image, button_play_party.x - 55, button_play_party.y + 30, 0, 4.85, 2.5)
         elseif ButtonAnimation.position == 2 then ButtonAnimation.anim:draw(ButtonAnimation.Image, button_play_local.x - 55, button_play_local.y - 25, 0, 4.9, 4.5) end
+    ]]
 
     elseif GAME == "choose_character" then
 
@@ -321,7 +325,7 @@ function D.draw(mx, my)
             end
         end
         
-    elseif GAME == "SETUP_CREATE" then
+    --[[elseif GAME == "SETUP_CREATE" then
         for i, button_textBox in ipairs(BoxesCreate) do
             love.graphics.draw(button_textBox.image, button_textBox.x, button_textBox.y, 0, button_textBox.scale)
             love.graphics.print(button_textBox.name, button_textBox.x + 25, button_textBox.y - 25)
@@ -464,14 +468,16 @@ function D.draw(mx, my)
             else love.graphics.setFont(bigFont); love.graphics.print(p.name, x, yPos - 50); love.graphics.setFont(normalFont)
             end
         end
-    elseif GAME == "not work" then
-        love.graphics.setFont(normalFont)
+    ]]
+    elseif GAME == "not_work" then
+        love.graphics.setFont(bigFont)
         love.graphics.print([[Извините, данная функция находится в разработке,
-но если вы умеете программировать на lua в программе LOVE(love2d), вы
-можете скачать исходный код игры на GitHub, и попытаться помочь в
-разработке игры]], 150, 250, 0, 1.5)
+но если вы умеете программировать на lua в программе
+LOVE(love2d), вы можете скачать исходный код игры
+на GitHub, и попытаться помочь в разработке игры]], 150, 220)
     end
 
+    if myServer then love.graphics.print(myServer.playersCount, 100, 100) end
     love.graphics.setColor(1, 1, 1)
 end
 

@@ -1,9 +1,9 @@
 function love.conf(t)
     t.identity = "data/saves"
     t.console = false
-    t.window.title = "BomberMan - Окно "
-    t.window.width = 800
-    t.window.height = 600
+    t.window.title = "Bomball"
+    t.window.width = 1280
+    t.window.height = 720
     t.window.resizable = false
     t.window.fullscreen = true
     t.window.highdpi = true

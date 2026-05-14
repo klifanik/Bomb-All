@@ -19,6 +19,9 @@ function love.load()
 
     initializationSprites()
     InitializationOther()
+
+    local iconData = love.image.newImageData("icon.png")
+    love.window.setIcon(iconData)
     
     spawnPlayers()
     SpawnBuffs()

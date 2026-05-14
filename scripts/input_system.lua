@@ -173,12 +173,12 @@ function M.ControlGui(player, joystick, btn, Typecntrl)
                 fade.level = "choose_character"
             elseif ButtonAnimation.position == 2 then
                 fade.state = "out"
+                fade.level = "not_work"
                 --fade.level = "choose_server"
-                fade.level = "not work"
             end
 
         end
-    elseif GAME == "choose_server" then
+    --[[elseif GAME == "choose_server" then
         if (Typecntrl == "keyboard" and btn == "down" or btn == "s" or btn == "up" or btn == "w") or
         (Typecntrl == "gamepad" and btn == "dpdown" or btn == "dpup") then
 
@@ -196,6 +196,7 @@ function M.ControlGui(player, joystick, btn, Typecntrl)
             end
 
         end
+    ]]
     elseif GAME == "choose_character" then
         if player.playing then
             if not player.ready then

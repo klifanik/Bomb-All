@@ -16,8 +16,8 @@ function C.click(x, y, btnCode, isTouch)
                 if ButtonAnimation.position == 2 then
                     actionTaken = true
                     fade.state = "out"
+                    fade.level = "not_work"
                     --fade.level = "choose_server"
-                    fade.level = "not work"
                 else
                     ButtonAnimation.position = 2
                 end
@@ -66,7 +66,7 @@ function C.click(x, y, btnCode, isTouch)
             
             if not actionTaken and isTouch then registerPlayer("touch", 0); hasTouch = true end
 
-        elseif GAME == "choose_server" then
+        --[[elseif GAME == "choose_server" then
             if not actionTaken then
                 if checkClick(x, y, button_play_create) then
                     if ButtonAnimation.position == 1 then
@@ -84,6 +84,8 @@ function C.click(x, y, btnCode, isTouch)
                     end
                 end
             end
+        ]]
+        
         elseif GAME == "change_modificator" then
             if not actionTaken then
                 if checkClick(x, y, NumbersButtons[1]) then
@@ -241,7 +243,7 @@ function C.click(x, y, btnCode, isTouch)
                     end
                 end
             end
-        elseif GAME == "SETUP_CREATE" then
+        --[[elseif GAME == "SETUP_CREATE" then
             if checkClick(x, y, button_textBox1) then
                 for _, b in ipairs(BoxesCreate) do b.image = image_TextBox end
                 button_textBox1.image = image_TextBox_Active
@@ -359,6 +361,7 @@ function C.click(x, y, btnCode, isTouch)
                 cursorPos = 0
 
             end
+        ]]
         end
     end
 end
