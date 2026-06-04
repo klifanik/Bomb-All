@@ -248,11 +248,11 @@ function M.ControlGui(player, joystick, btn, Typecntrl)
 
             if (Typecntrl == "keyboard" and ((btn == "return" or btn == "kpenter"))) or
             (Typecntrl == "gamepad" and btn == "a") then
-                if NumberAnimation.position == 1 then for _, i in ipairs(NumbersButtons) do i.active = false end; button_one.active = true end
-                if NumberAnimation.position == 2 then for _, i in ipairs(NumbersButtons) do i.active = false end; button_two.active = true end
-                if NumberAnimation.position == 3 then for _, i in ipairs(NumbersButtons) do i.active = false end; button_three.active = true end
-                if NumberAnimation.position == 4 then for _, i in ipairs(NumbersButtons) do i.active = false end; button_four.active = true end
-                if NumberAnimation.position == 5 then for _, i in ipairs(NumbersButtons) do i.active = false end; button_five.active = true end
+                if NumberAnimation.position == 1 then for _, i in ipairs(NumbersButtons) do i.active = false end; button_one.active = true; WINS = 1 end
+                if NumberAnimation.position == 2 then for _, i in ipairs(NumbersButtons) do i.active = false end; button_two.active = true; WINS = 2 end
+                if NumberAnimation.position == 3 then for _, i in ipairs(NumbersButtons) do i.active = false end; button_three.active = true; WINS = 3 end
+                if NumberAnimation.position == 4 then for _, i in ipairs(NumbersButtons) do i.active = false end; button_four.active = true; WINS = 4 end
+                if NumberAnimation.position == 5 then for _, i in ipairs(NumbersButtons) do i.active = false end; button_five.active = true; WINS = 5 end
             end
         elseif ButtonAnimation.position == 2 then
             if (Typecntrl == "keyboard" and (btn == "up" or btn == "w")) or

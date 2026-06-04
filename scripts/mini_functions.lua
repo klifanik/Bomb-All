@@ -312,6 +312,7 @@ function RetryGame()
     GAME = "transition"
     ExitFromWinnersTime = 5.0
     TimeToExit = 3.0
+    WinnerCupY = -80
     objects = {}
     pieces = {}
     buffs = {}
@@ -345,7 +346,7 @@ function RewardLastSurvivor()
         end
     end
 
-    if #alivePlayers then
+    if #alivePlayers > 0 then
         for i = 1, #alivePlayers do
              alivePlayers[i].wins = alivePlayers[i].wins + 1
              alivePlayers[i].winner = true
@@ -379,7 +380,7 @@ function registerPlayer(controllerType, controllerId)
         if not p.playing then
             local w = choose_NoPlayer_image:getWidth() * 0.5
             local wk = choose_notready:getWidth() * 0.2
-            local lx, rx, ly, ry = x + ((w - wk) / 2), (x + ((w - wk) / 2)) + 3, yPos + 390, yPos + 450
+            local lx, rx, ly, ry = x + ((w - wk) / 2), (x + ((w - wk) / 2)) + 3, yPos + 370, yPos + 430
             
             p.playing = true
             p.controller = controllerType

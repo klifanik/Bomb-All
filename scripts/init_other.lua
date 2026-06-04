@@ -5,9 +5,10 @@ function InitializationOther()
     ReadyPlayers = 0
 
     TimeToExit = 3.0
-
     ExitFromWinnersTime = 5.0
-    winnerHandled = false
+
+    WinnerCupSlide = false
+    WinnerCupY = -80
     
     WINS = 1
     

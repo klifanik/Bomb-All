@@ -521,6 +521,8 @@ function U.update(dt)
         end
     end
 
+    if WinnerCupSlide then WinnerCupY = WinnerCupY + (150 * dt) end
+
     cursorTimer = cursorTimer + dt
     if cursorTimer > 0.5 then
         cursorTimer = 0

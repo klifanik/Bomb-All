@@ -125,6 +125,8 @@ function initializationSprites()
     image_TextBox = love.graphics.newImage("data/sprites/localhost/textBox.png")
     image_TextBox_Active = love.graphics.newImage("data/sprites/localhost/textBoxActive.png")
     image_play = love.graphics.newImage("data/sprites/gui/play.png")
+    image_btn_select = love.graphics.newImage("data/sprites/gui/select_btns.png")
+    image_waitings = love.graphics.newImage("data/sprites/gui/waitings.png")
     
     buff_bomb_image = love.graphics.newImage("data/sprites/buffs/bomb.png")
     buff_fire_image = love.graphics.newImage("data/sprites/buffs/fire.png")

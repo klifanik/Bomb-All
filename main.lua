@@ -76,7 +76,6 @@ function love.draw()
 end
 
 function love.textinput(t)
-    print("ВВОД СИМВОЛА: " .. t .. " | ВРЕМЯ: " .. love.timer.getTime())
     NetError = ""
 
     local field = InputFocus
@@ -155,7 +154,9 @@ function love.keypressed(key)
         elseif GAME == "choose_character" then
             if p.controller == "keyboard" then inputSys.ControlGui(p, nil, key, "keyboard"); break end
             registerPlayer("keyboard", 0)
-        elseif GAME == "gui" or GAME == "choose_server" or GAME == "change_modificator" or GAME == "WaitForReady" then inputSys.ControlGui(p, nil, key, "keyboard"); break
+        elseif (GAME == "choose_server" or GAME == "change_modificator" or GAME == "WaitForReady") and p.controller == "keyboard" then
+            inputSys.ControlGui(p, nil, key, "keyboard"); break
+        elseif GAME == "gui" then inputSys.ControlGui(nil, nil, key, "keyboard"); break
         end
     end
 end
@@ -253,7 +254,9 @@ function love.gamepadpressed(joy, btn)
         elseif GAME == "choose_character" then
             if p.id == joy and p.controller == "gamepad" then inputSys.ControlGui(p, joy, btn, "gamepad"); break end
             registerPlayer("gamepad", joy)
-        elseif GAME == "gui" or GAME == "choose_server" or GAME == "change_modificator" then inputSys.ControlGui(p, joy, btn, "gamepad"); break
+        elseif (GAME == "choose_server" or GAME == "change_modificator") and (p.id == joy and p.controller == "gamepad") then
+            inputSys.ControlGui(p, joy, btn, "gamepad"); break
+        elseif GAME == "gui" then inputSys.ControlGui(nil, joy, btn, "gamepad"); break
         end
     end
 end

@@ -109,11 +109,9 @@ function D.draw(mx, my)
     elseif GAME == "choose_character" then
 
         if ReadyPlayers == NumberOfPlayers and NumberOfPlayers > 1 then love.graphics.draw(image_play_game, button_play_game.x, button_play_game.y, 0, button_play_game.scale, button_play_game.scale)
-        elseif NumberOfPlayers > 1 then love.graphics.print("ЖДЕМ ПОКА ВСЕ ИГРОКИ БУДУТ ГОТОВЫ", 400, 650, 0, 1) end
+        elseif NumberOfPlayers > 1 then love.graphics.draw(image_btn_select, (targetWidth / 2) - (image_btn_select:getWidth() * 1 / 2), 620) end
 
-        if NumberOfPlayers < 2 then love.graphics.print([[НАЖМИ ЛЮБУЮ КНОПКУ НА ДЖОЙСТИКЕ, КЛАВИАТУРЕ ИЛИ В ЛЮБОМ МЕСТЕ НА ЭКРАНЕ
-        
-                                        ДЛЯ ИГРЫ НУЖНО МИНИМУМ 2 ЧЕЛОВЕКА]], 200, 650, 0, 1) end
+        if NumberOfPlayers < 2 then love.graphics.draw(image_waitings, (targetWidth / 2) - (image_waitings:getWidth() * 1 / 2), 620) end
 
         local startX = 150
         local spacing = 250
@@ -317,11 +315,29 @@ function D.draw(mx, my)
         end
 
         for j, p in ipairs(Players) do
-            for i = 1, p.wins do
-                local needy = startY + (j-1) * spacing
-                local y = needy + (configs[j]:getHeight() / 2) - win_cup_image:getHeight() / 2
-                local x = startCupX + (i-1) * spacingCup
-                love.graphics.draw(win_cup_image, x, y)
+            if p.winner then
+                for i = 1, p.wins - 1 do
+                    local needy = startY + (j-1) * spacing
+                    local y = needy + (configs[j]:getHeight() / 2) - win_cup_image:getHeight() / 2
+                    local x = startCupX + (i-1) * spacingCup
+                    love.graphics.draw(win_cup_image, x, y)
+                end
+                local y = startY + (j-1) * spacing + (configs[j]:getHeight() / 2) - win_cup_image:getHeight() / 2
+                local x = startCupX + (p.wins-1) * spacingCup
+                if WinnerCupY >= y then
+                    WinnerCupSlide = false
+                    love.graphics.draw(win_cup_image, x, y)
+                else
+                    WinnerCupSlide = true
+                    love.graphics.draw(win_cup_image, x, WinnerCupY)
+                end
+            else
+                for i = 1, p.wins do
+                    local needy = startY + (j-1) * spacing
+                    local y = needy + (configs[j]:getHeight() / 2) - win_cup_image:getHeight() / 2
+                    local x = startCupX + (i-1) * spacingCup
+                    love.graphics.draw(win_cup_image, x, y)
+                end
             end
         end
         
