@@ -21,7 +21,34 @@ function C.click(x, y, btnCode, isTouch)
                 else
                     ButtonAnimation.position = 2
                 end
+            elseif checkClick(x, y, button_settings) then
+                if ButtonAnimation.position == 3 then
+                    actionTaken = true
+                    fade.state = "out"
+                    fade.level = "settings"
+                else
+                    ButtonAnimation.position = 3
+                end
             end
+
+        elseif GAME == "game" then
+
+            if blur.isPaused then
+                if checkClick(x, y, button_leave) then
+                    if ButtonAnimation.position == 1 then
+                        SUREEXIT()
+                    else
+                        ButtonAnimation.position = 1
+                    end
+                elseif checkClick(x, y, button_continue) then
+                    if ButtonAnimation.position == 2 then
+                        blur.isPaused = false
+                    else
+                        ButtonAnimation.position = 2
+                    end
+                end
+            end
+
         elseif GAME == "choose_character" then
             local currentInput = isTouch and "touch" or "keyboard"
             

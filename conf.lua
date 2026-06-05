@@ -1,5 +1,5 @@
 function love.conf(t)
-    t.identity = "data/saves"
+    t.identity = "Bomb-All-Best-Game-Ever"
     t.console = true
     t.window.title = "Bomball"
     t.window.width = 1280

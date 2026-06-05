@@ -5,37 +5,36 @@ function M.getMovement(player)
     local dx, dy = 0, 0
     local deadzone = 0.25
 
-    if player then
-        if not player.unbreakable then
-            if player.controller == "keyboard" then
-                if love.keyboard.isDown("right", "d") then dx = 1
-                elseif love.keyboard.isDown("left", "a") then dx = -1
-                elseif love.keyboard.isDown("up", "w") then dy = -1
-                elseif love.keyboard.isDown("down", "s") then dy = 1 end
-            elseif player.controller == "touch" then
-                for _, btn in ipairs(buttons) do
-                    if btn.isTouch then
-                        if btn == BUTTON_RIGHT then dx = 1
-                        elseif btn == BUTTON_LEFT then dx = -1
-                        elseif btn == BUTTON_UP then dy = -1
-                        elseif btn == BUTTON_DOWN then dy = 1 end
-                    end
+
+    if player and not player.unbreakable then
+        if player.controller == "keyboard" then
+            if love.keyboard.isDown("right", "d") then dx = 1
+            elseif love.keyboard.isDown("left", "a") then dx = -1
+            elseif love.keyboard.isDown("up", "w") then dy = -1
+            elseif love.keyboard.isDown("down", "s") then dy = 1 end
+        elseif player.controller == "touch" then
+            for _, btn in ipairs(buttons) do
+                if btn.isTouch then
+                    if btn == BUTTON_RIGHT then dx = 1
+                    elseif btn == BUTTON_LEFT then dx = -1
+                    elseif btn == BUTTON_UP then dy = -1
+                    elseif btn == BUTTON_DOWN then dy = 1 end
                 end
-            elseif player.controller == "gamepad" then
-                for _, gp in ipairs(joysticks) do
-                    if player.id == gp then
-                        local ax, ay = gp:getAxis(1), gp:getAxis(2)
-                        if gp:isGamepadDown("dpright") or ax > deadzone then dx = 1
-                        elseif gp:isGamepadDown("dpleft") or ax < -deadzone then dx = -1
-                        elseif gp:isGamepadDown("dpup") or ay < -deadzone then dy = -1
-                        elseif gp:isGamepadDown("dpdown") or ay > deadzone then dy = 1 end
-                    end
+            end
+        elseif player.controller == "gamepad" then
+            for _, gp in ipairs(joysticks) do
+                if player.id == gp then
+                    local ax, ay = gp:getAxis(1), gp:getAxis(2)
+                    if gp:isGamepadDown("dpright") or ax > deadzone then dx = 1
+                    elseif gp:isGamepadDown("dpleft") or ax < -deadzone then dx = -1
+                    elseif gp:isGamepadDown("dpup") or ay < -deadzone then dy = -1
+                    elseif gp:isGamepadDown("dpdown") or ay > deadzone then dy = 1 end
                 end
             end
         end
-
-        if player.virus == 1 then dx, dy = -dx, -dy end
     end
+
+    if player.virus == 1 then dx, dy = -dx, -dy end
 
     return dx, dy
 end
@@ -160,10 +159,23 @@ end
 
 function M.ControlGui(player, joystick, btn, Typecntrl)
     if GAME == "gui" then
-        if (Typecntrl == "keyboard" and btn == "down" or btn == "s" or btn == "up" or btn == "w") or
-        (Typecntrl == "gamepad" and btn == "dpdown" or btn == "dpup") then
+        if (Typecntrl == "keyboard" and btn == "down" or btn == "s") or
+        (Typecntrl == "gamepad" and btn == "dpdown") then
 
-            ButtonAnimation.position = (ButtonAnimation.position == 1) and 2 or 1
+            if ButtonAnimation.position <3 then
+                ButtonAnimation.position = ButtonAnimation.position + 1
+            else
+                ButtonAnimation.position = 1
+            end
+
+        elseif (Typecntrl == "keyboard" and btn == "up" or btn == "w") or
+        (Typecntrl == "gamepad" and btn == "dpup") then
+
+            if ButtonAnimation.position >1 then
+                ButtonAnimation.position = ButtonAnimation.position - 1
+            else
+                ButtonAnimation.position = 3
+            end
 
         elseif (Typecntrl == "keyboard" and btn == "kpenter" or btn == "return" or btn == "space") or
         (Typecntrl == "gamepad" and btn == "start" or btn == "a") then
@@ -175,9 +187,27 @@ function M.ControlGui(player, joystick, btn, Typecntrl)
                 fade.state = "out"
                 fade.level = "not_work"
                 --fade.level = "choose_server"
+            elseif ButtonAnimation.position == 3 then
+                fade.state = "out"
+                fade.level = "settings"
             end
 
         end
+    elseif GAME == "game" then
+
+        if (Typecntrl == "keyboard" and btn == "down" or btn == "s" or btn == "up" or btn == "w") or
+        (Typecntrl == "gamepad" and btn == "dpdown" or btn == "dpup") then
+
+            ButtonAnimation.position = (ButtonAnimation.position == 1) and 2 or 1
+
+        elseif (Typecntrl == "keyboard" and btn == "kpenter" or btn == "return" or btn == "space") or
+        (Typecntrl == "gamepad" and btn == "start" or btn == "a") then
+
+            if ButtonAnimation.position == 1 then SUREEXIT()
+            elseif ButtonAnimation.position == 2 then blur.isPaused = false
+            end
+        end
+
     --[[elseif GAME == "choose_server" then
         if (Typecntrl == "keyboard" and btn == "down" or btn == "s" or btn == "up" or btn == "w") or
         (Typecntrl == "gamepad" and btn == "dpdown" or btn == "dpup") then
@@ -197,6 +227,7 @@ function M.ControlGui(player, joystick, btn, Typecntrl)
 
         end
     ]]
+    
     elseif GAME == "choose_character" then
         if player.playing then
             if not player.ready then

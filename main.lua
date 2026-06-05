@@ -9,16 +9,20 @@ function love.load()
     miniFunc = require("scripts/mini_functions")
     init = require("scripts/init")
     initOther = require("scripts/init_other")
+    initBtns = require("scripts/init_btns")
     Drawings = require("scripts/drawings")
     ClickMouse = require("scripts/click")
     ServerModule = require "scripts/server_module"
     ClientModule = require "scripts/client_module"
     PlayerScript = require "scripts/player"
+    blur = require("scripts/blur")
     
     love.joystick.loadGamepadMappings("scripts/gamecontrollerdb.txt")
 
     initializationSprites()
     InitializationOther()
+    InitButtons()
+    blur.load()
 
     local iconData = love.image.newImageData("icon.png")
     love.window.setIcon(iconData)
@@ -52,8 +56,9 @@ function love.joystickremoved(joystick)
 end
 
 function love.update(DeltaTime)
-    updFunc.update(DeltaTime)
     ButtonAnimation.anim:update(DeltaTime)
+    if blur.isPaused then return end
+    updFunc.update(DeltaTime)
     ChosenAnimation.anim:update(DeltaTime)
     NumberAnimation.anim:update(DeltaTime)
 
@@ -98,7 +103,7 @@ end
 
 function love.keypressed(key)
     hasKeyboard = true
-    if key == "escape" and GAME ~= "choose_character" and GAME ~= "SETUP_CREATE" then
+    if key == "escape" and GAME ~= "choose_character" and GAME ~= "SETUP_CREATE" and GAME ~= "SETUP_JOIN" then
         Exit()
     elseif key == "escape" and GAME == "choose_character" then
         for _, p in ipairs(Players) do
@@ -144,6 +149,7 @@ function love.keypressed(key)
                 cursorPos = utf8.len(s)
             end
         end
+    elseif GAME == "game" and blur.isPaused then inputSys.ControlGui({id = nil, controller = "keyboard"}, nil, key, "keyboard") return
     end
     for _, p in ipairs(Players) do
         if GAME == "game" then
@@ -176,7 +182,7 @@ function love.touchpressed(id, x, y)
     end
 end
 
-local last_axis_state = { x = 0, y = 0}
+local last_axis_state = {x = 0, y = 0}
 
 function love.gamepadaxis(joy, axis, value)
     local threshold = 0.5
@@ -225,6 +231,8 @@ function love.gamepadaxis(joy, axis, value)
             end
             
             if not found_player then registerPlayer("gamepad", joy) end
+
+        elseif GAME == "game" and blur.isPaused then inputSys.ControlGui({id = joy, controller = "gamepad"}, joy, command, "gamepad")
         end
     end
 end
@@ -233,8 +241,12 @@ function love.gamepadpressed(joy, btn)
     hasGamepad = true
     if btn == "b" and GAME ~= "game" and GAME ~= "choose_character" then
         Exit()
-    elseif GAME == "game" and btn == "start" then
-        Exit()
+    elseif GAME == "game" then
+        if btn == "start" and not blur.isPaused then
+            Exit()
+        else
+            inputSys.ControlGui({id = joy, controller = "gamepad"}, joy, btn, "gamepad") return
+        end
     elseif GAME == "choose_character" and btn == "b" then
         for _, p in ipairs(Players) do
             if p.id == joy and p.ready then

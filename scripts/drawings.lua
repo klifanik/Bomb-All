@@ -1,3 +1,75 @@
+function DrawGame()
+
+    for _, i in ipairs(buffs) do
+        love.graphics.draw(i.image, i.x, i.y, 0, i.scale, i.scale)
+    end
+        
+    for _, obj in ipairs(objects) do obj.draw(obj) end 
+    for _, obj in ipairs(pieces) do obj.draw(obj) end
+    
+    for _, p in ipairs(Players) do
+        if not p.playing and p.death and p.timeAnimDeath > 0 then
+            if p.color == "white" then whiteDeathAnimation.anim:draw(whiteDeathAnimation.Image, p.x, p.y, 0, 1)
+            elseif p.color == "black" then blackDeathAnimation.anim:draw(blackDeathAnimation.Image, p.x, p.y, 0, 1)
+            elseif p.color == "green" then greenDeathAnimation.anim:draw(greenDeathAnimation.Image, p.x, p.y, 0, 1)
+            elseif p.color == "red" then redDeathAnimation.anim:draw(redDeathAnimation.Image, p.x, p.y, 0, 1) end
+        end
+    end
+        
+    for o, player in ipairs(Players) do
+        if player.playing then
+            if not player.unbreakable then
+                if player.virus > 0 and player.isRed then
+                    love.graphics.setColor(1, 0, 0)
+                else
+                    love.graphics.setColor(1, 1, 1)
+                end
+                
+                love.graphics.draw(player.sprite, math.floor(player.x), math.floor(player.y), 0, player.size, player.size)
+                
+                love.graphics.setColor(1, 1, 1) 
+
+                    
+                for _, obj in ipairs(breaks) do 
+                    if not obj.isExploded then 
+                        love.graphics.draw(obj.image, obj.x, obj.y, 0, obj.scale, obj.scale) 
+                    end 
+                end
+                
+                for _, obj in ipairs(blocks) do love.graphics.draw(obj.image, obj.x, obj.y, 0, obj.scale, obj.scale) end
+            else
+                for _, obj in ipairs(breaks) do 
+                    if not obj.isExploded then 
+                            love.graphics.draw(obj.image, obj.x, obj.y, 0, obj.scale, obj.scale) 
+                    end 
+                end
+                
+                for _, obj in ipairs(blocks) do love.graphics.draw(obj.image, obj.x, obj.y, 0, obj.scale, obj.scale) end
+
+                    if player.virus > 0 and player.isRed then
+                        love.graphics.setColor(1, 0, 0)
+                    else
+                        love.graphics.setColor(1, 1, 1)
+                    end
+                
+                    love.graphics.draw(player.sprite, math.floor(player.x), math.floor(player.y), 0, player.size, player.size)
+                
+                    love.graphics.setColor(1, 1, 1)
+                end
+            end
+        end
+        
+    if hasTouch then
+        for _, obj in ipairs(buttons) do
+            love.graphics.setColor(1, 1, 1, obj.opacity)
+            love.graphics.draw(obj.image, obj.x, obj.y, 0, obj.scale, obj.scale)
+        end
+    end
+        
+    love.graphics.setColor(1, 1, 1)
+end
+
+
 local D = {}
 
 function D.draw(mx, my)
@@ -7,89 +79,45 @@ function D.draw(mx, my)
     if GAME ~= "game" then love.graphics.draw(background_wall, 0, 0, 0, 0.9, 1) end
  
     if GAME == "game" then 
-        for _, i in ipairs(buffs) do
-            love.graphics.draw(i.image, i.x, i.y, 0, i.scale, i.scale)
-        end
-            
-        for _, obj in ipairs(objects) do obj.draw(obj) end 
-        for _, obj in ipairs(pieces) do obj.draw(obj) end
-        
-        for _, p in ipairs(Players) do
-            if not p.playing and p.death and p.timeAnimDeath > 0 then
-                if p.color == "white" then whiteDeathAnimation.anim:draw(whiteDeathAnimation.Image, p.x, p.y, 0, 1)
-                elseif p.color == "black" then blackDeathAnimation.anim:draw(blackDeathAnimation.Image, p.x, p.y, 0, 1)
-                elseif p.color == "green" then greenDeathAnimation.anim:draw(greenDeathAnimation.Image, p.x, p.y, 0, 1)
-                elseif p.color == "red" then redDeathAnimation.anim:draw(redDeathAnimation.Image, p.x, p.y, 0, 1) end
-            end
-        end
-            
-        for o, player in ipairs(Players) do
-            if player.playing then
-                if not player.unbreakable then
-                    if player.virus > 0 and player.isRed then
-                        love.graphics.setColor(1, 0, 0)
-                    else
-                        love.graphics.setColor(1, 1, 1)
-                    end
-                    
-                    love.graphics.draw(player.sprite, math.floor(player.x), math.floor(player.y), 0, player.size, player.size)
-                    
-                    love.graphics.setColor(1, 1, 1) 
 
-                        
-                    for _, obj in ipairs(breaks) do 
-                        if not obj.isExploded then 
-                            love.graphics.draw(obj.image, obj.x, obj.y, 0, obj.scale, obj.scale) 
-                        end 
-                    end
-                    
-                    for _, obj in ipairs(blocks) do love.graphics.draw(obj.image, obj.x, obj.y, 0, obj.scale, obj.scale) end
-                else
-                    for _, obj in ipairs(breaks) do 
-                        if not obj.isExploded then 
-                                love.graphics.draw(obj.image, obj.x, obj.y, 0, obj.scale, obj.scale) 
-                        end 
-                    end
-                    
-                    for _, obj in ipairs(blocks) do love.graphics.draw(obj.image, obj.x, obj.y, 0, obj.scale, obj.scale) end
+        if blur.isPaused then
+            blur.draw()
+            
+            love.graphics.draw(image_sure_leave, (targetWidth / 2) - (image_sure_leave:getWidth() * 1 / 2), 100)
+            love.graphics.draw(button_leave.image, button_leave.x, button_leave.y, 0, button_leave.scale)
+            love.graphics.draw(button_continue.image, button_continue.x, button_continue.y, 0, button_continue.scale)
 
-                        if player.virus > 0 and player.isRed then
-                            love.graphics.setColor(1, 0, 0)
-                        else
-                            love.graphics.setColor(1, 1, 1)
-                        end
-                    
-                        love.graphics.draw(player.sprite, math.floor(player.x), math.floor(player.y), 0, player.size, player.size)
-                    
-                        love.graphics.setColor(1, 1, 1)
-                    end
-                end
+            if checkClick(mx, my, button_leave) then
+                ButtonAnimation.position = 1
+            elseif checkClick(mx, my, button_continue) then
+                ButtonAnimation.position = 2
             end
-            
-        if hasTouch then
-            for _, obj in ipairs(buttons) do
-                love.graphics.setColor(1, 1, 1, obj.opacity)
-                love.graphics.draw(obj.image, obj.x, obj.y, 0, obj.scale, obj.scale)
-            end
+
+            if ButtonAnimation.position == 1 then ButtonAnimation.anim:draw(ButtonAnimation.Image, button_leave.x - 14, button_leave.y - 12.5, 0, 5.6, 4.3)
+            elseif ButtonAnimation.position == 2 then ButtonAnimation.anim:draw(ButtonAnimation.Image, button_continue.x - 14, button_continue.y - 12.5, 0, 5.6, 4) end
+
+        else
+            DrawGame()
         end
-            
-        love.graphics.setColor(1, 1, 1)
  
     elseif GAME == "gui" then 
-        love.graphics.setFont(normalFont)
         love.graphics.print("v 0.0.1 beta", 1100, 700)
 
         love.graphics.draw(image_play_party, button_play_party.x, button_play_party.y, 0, button_play_party.scale, button_play_party.scale) 
         love.graphics.draw(image_play_local, button_play_local.x, button_play_local.y, 0, button_play_local.scale, button_play_local.scale)
+        love.graphics.draw(image_settings, button_settings.x, button_settings.y, 0, button_settings.scale, button_settings.scale)
 
         if checkClick(mx, my, button_play_party) then
             ButtonAnimation.position = 1
         elseif checkClick(mx, my, button_play_local) then
             ButtonAnimation.position = 2
+        elseif checkClick(mx, my, button_settings) then
+            ButtonAnimation.position = 3
         end
 
         if ButtonAnimation.position == 1 then ButtonAnimation.anim:draw(ButtonAnimation.Image, button_play_party.x - 12.5, button_play_party.y - 12.5, 0, 4, 4)
-        elseif ButtonAnimation.position == 2 then ButtonAnimation.anim:draw(ButtonAnimation.Image, button_play_local.x - 12.5, button_play_local.y - 12.5, 0, 4, 4) end
+        elseif ButtonAnimation.position == 2 then ButtonAnimation.anim:draw(ButtonAnimation.Image, button_play_local.x - 12.5, button_play_local.y - 12.5, 0, 4, 4)
+        elseif ButtonAnimation.position == 3 then ButtonAnimation.anim:draw(ButtonAnimation.Image, button_settings.x - 12.5, button_settings.y - 12.5, 0, 4, 4) end
 
     --[[elseif GAME == "choose_server" then
 
@@ -109,7 +137,10 @@ function D.draw(mx, my)
     elseif GAME == "choose_character" then
 
         if ReadyPlayers == NumberOfPlayers and NumberOfPlayers > 1 then love.graphics.draw(image_play_game, button_play_game.x, button_play_game.y, 0, button_play_game.scale, button_play_game.scale)
-        elseif NumberOfPlayers > 1 then love.graphics.draw(image_btn_select, (targetWidth / 2) - (image_btn_select:getWidth() * 1 / 2), 620) end
+        elseif NumberOfPlayers > 1 then
+            love.graphics.draw(image_btn_select, 50, 620, 0, 0.75)
+            love.graphics.draw(image_btn_cancel, 630, 620, 0, 0.75)
+        end
 
         if NumberOfPlayers < 2 then love.graphics.draw(image_waitings, (targetWidth / 2) - (image_waitings:getWidth() * 1 / 2), 620) end
 
@@ -139,11 +170,6 @@ function D.draw(mx, my)
                 
                 if ctrlImg then love.graphics.draw(ctrlImg, x + ((w - wc) / 2), YforCTRLIMG, 0, 0.3, 0.3) end
 
-                if i == 1 then love.graphics.draw(choose_P1, x + ((w - wc) / 2), yPos - 80, 0, 0.4, 0.4)
-                elseif i == 2 then love.graphics.draw(choose_P2, x + ((w - wc) / 2), yPos - 80, 0, 0.4, 0.4)
-                elseif i == 3 then love.graphics.draw(choose_P3, x + ((w - wc) / 2), yPos - 80, 0, 0.4, 0.4)
-                elseif i == 4 then love.graphics.draw(choose_P4, x + ((w - wc) / 2), yPos - 80, 0, 0.4, 0.4) end
-
                 local lx, rx, ly, ry = x + ((w - wk) / 2), (x + ((w - wk) / 2)) + 3, yPos + 370, yPos + 430
 
                 if p.ready then
@@ -158,6 +184,11 @@ function D.draw(mx, my)
                 elseif p.positionButton == 2 then ButtonAnimation.anim:draw(ButtonAnimation.Image, rx - 7, ry - 7, 0, 1.8, 1.8)
                 end
             end
+
+            if i == 1 then love.graphics.draw(choose_P1, x, yPos - 80, 0, 0.4, 0.4)
+            elseif i == 2 then love.graphics.draw(choose_P2, x, yPos - 80, 0, 0.4, 0.4)
+            elseif i == 3 then love.graphics.draw(choose_P3, x, yPos - 80, 0, 0.4, 0.4)
+            elseif i == 4 then love.graphics.draw(choose_P4, x, yPos - 80, 0, 0.4, 0.4) end
         end
 
         for _, p in ipairs(Players) do
@@ -210,7 +241,7 @@ function D.draw(mx, my)
                 if Players[i].team == "blue" then stY = 320 elseif Players[i].team == "red" then stY = 465 end
 
                 if i == 1 then love.graphics.draw(spriteDownWhite, x, stY, 0, 0.2) end
-                if i == 2 then love.graphics.draw(spriteDownBlack, x, stY, 0, 0.2) end
+                if i == 2 then love.graphics.draw(sprriteDownBlack, x, stY, 0, 0.2) end
                 if i == 3 then love.graphics.draw(spriteDownGreen, x, stY, 0, 0.2) end
                 if i == 4 then love.graphics.draw(spriteDownRed, x, stY, 0, 0.2) end
             end
@@ -305,7 +336,7 @@ function D.draw(mx, my)
         local xPos = (targetWidth / 2) - win_white_image:getWidth() / 2
         local startCupX = xPos + 120
 
-        local configs = {win_white_image, win_black_inage, win_green_image, win_red_image}
+        local configs = {win_white_image, win_black_image, win_green_image, win_red_image}
         local raz = 0
         for _, p in ipairs(Players) do if p.controller ~= "none" then raz = raz + 1 end end
 
@@ -485,6 +516,12 @@ function D.draw(mx, my)
             end
         end
     ]]
+    elseif GAME == "settings" then
+
+        love.graphics.draw(image_tutorial, (targetWidth / 2) - (image_tutorial:getWidth() * 1 / 2), 50)
+        love.graphics.draw(button_musicOnOff.image, button_musicOnOff.x, button_musicOnOff.y, 0, button_musicOnOff.scale)
+        love.graphics.draw(button_soundOnOff.image, button_soundOnOff.x, button_soundOnOff.y, 0, button_soundOnOff.scale)
+
     elseif GAME == "not_work" then
         love.graphics.setFont(bigFont)
         love.graphics.print([[Извините, данная функция находится в разработке,

@@ -12,7 +12,7 @@ Run BombAll.exe.
 Option 2: Run from Source (For Developers)
 If you have LÖVE installed on your system:
 
-Clone this repository: git clone https://github.com/YOUR_USERNAME/BombAll.git
+Clone this repository: git clone https://github.com/klifanik/BombAll.git
 
 Navigate to the project folder.
 

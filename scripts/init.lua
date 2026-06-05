@@ -1,186 +1,114 @@
 function initializationSprites()
-    spriteDownWhite = love.graphics.newImage("data/sprites/man_white/down.png")
-    spriteUpWhite = love.graphics.newImage("data/sprites/man_white/up.png") 
-    spriteLeftWhite = love.graphics.newImage("data/sprites/man_white/left.png") 
-    spriteRightWhite = love.graphics.newImage("data/sprites/man_white/right.png")
+    -- 1. АВТОМАТИЗАЦИЯ ЧЕЛОВЕЧКОВ И ДРАКОНОВ
+    local colors = {"White", "Black", "Green", "Red"}
+    local directions = {"down", "up", "left", "right"}
+    local dragons = {"Blue", "Yellow", "Green", "Purple", "Pink"}
 
-    spriteDownBlack = love.graphics.newImage("data/sprites/man_black/down.png") 
-    spriteUpBlack = love.graphics.newImage("data/sprites/man_black/up.png") 
-    spriteLeftBlack = love.graphics.newImage("data/sprites/man_black/left.png") 
-    spriteRightBlack = love.graphics.newImage("data/sprites/man_black/right.png")
+    for _, color in ipairs(colors) do
+        -- Базовые направления (например: spriteDownWhite)
+        for _, dir in ipairs(directions) do
+            -- Делаем первую букву направления заглавной для правильного имени переменной (down -> Down)
+            local dirCap = dir:sub(1,1):upper() .. dir:sub(2)
+            local varName = "sprite" .. dirCap .. color
+            local folderColor = color:lower()
+            
+            _G[varName] = love.graphics.newImage("sprites/man_" .. folderColor .. "/" .. dir .. ".png")
+        end
+        
+        -- Спрайты драконов (например: spriteBlueDragonLeftBlack)
+        for _, dragon in ipairs(dragons) do
+            for _, dir in ipairs(directions) do
+                local varName = "sprite" .. dragon .. "Dragon" .. dir:sub(1,1):upper() .. dir:sub(2) .. color
+                local folderColor = color:lower()
+                local fileName = dragon:lower() .. "_" .. dir
+                
+                _G[varName] = love.graphics.newImage("sprites/man_" .. folderColor .. "/" .. fileName .. ".png")
+            end
+        end
+    end
 
-    spriteDownGreen = love.graphics.newImage("data/sprites/man_green/down.png") 
-    spriteUpGreen = love.graphics.newImage("data/sprites/man_green/up.png") 
-    spriteLeftGreen = love.graphics.newImage("data/sprites/man_green/left.png") 
-    spriteRightGreen = love.graphics.newImage("data/sprites/man_green/right.png")
-
-    spriteDownRed = love.graphics.newImage("data/sprites/man_red/down.png") 
-    spriteUpRed = love.graphics.newImage("data/sprites/man_red/up.png") 
-    spriteLeftRed = love.graphics.newImage("data/sprites/man_red/left.png") 
-    spriteRightRed = love.graphics.newImage("data/sprites/man_red/right.png")
-
-    spriteBlueDragonUpWhite = love.graphics.newImage("data/sprites/man_white/blue_up.png")
-    spriteBlueDragonDownWhite = love.graphics.newImage("data/sprites/man_white/blue_down.png")
-    spriteBlueDragonLeftWhite = love.graphics.newImage("data/sprites/man_white/blue_left.png")
-    spriteBlueDragonRightWhite = love.graphics.newImage("data/sprites/man_white/blue_right.png")
-    spriteYellowDragonUpWhite = love.graphics.newImage("data/sprites/man_white/yellow_up.png")
-    spriteYellowDragonDownWhite = love.graphics.newImage("data/sprites/man_white/yellow_down.png")
-    spriteYellowDragonLeftWhite = love.graphics.newImage("data/sprites/man_white/yellow_left.png")
-    spriteYellowDragonRightWhite = love.graphics.newImage("data/sprites/man_white/yellow_right.png")
-    spriteGreenDragonUpWhite = love.graphics.newImage("data/sprites/man_white/green_up.png")
-    spriteGreenDragonDownWhite = love.graphics.newImage("data/sprites/man_white/green_down.png")
-    spriteGreenDragonLeftWhite = love.graphics.newImage("data/sprites/man_white/green_left.png")
-    spriteGreenDragonRightWhite = love.graphics.newImage("data/sprites/man_white/green_right.png")
-    spritePurpleDragonUpWhite = love.graphics.newImage("data/sprites/man_white/purple_up.png")
-    spritePurpleDragonDownWhite = love.graphics.newImage("data/sprites/man_white/purple_down.png")
-    spritePurpleDragonLeftWhite = love.graphics.newImage("data/sprites/man_white/purple_left.png")
-    spritePurpleDragonRightWhite = love.graphics.newImage("data/sprites/man_white/purple_right.png")
-    spritePinkDragonUpWhite = love.graphics.newImage("data/sprites/man_white/pink_up.png")
-    spritePinkDragonDownWhite = love.graphics.newImage("data/sprites/man_white/pink_down.png")
-    spritePinkDragonLeftWhite = love.graphics.newImage("data/sprites/man_white/pink_left.png")
-    spritePinkDragonRightWhite = love.graphics.newImage("data/sprites/man_white/pink_right.png")
-
-    spriteBlueDragonUpBlack = love.graphics.newImage("data/sprites/man_black/blue_up.png")
-    spriteBlueDragonDownBlack = love.graphics.newImage("data/sprites/man_black/blue_down.png")
-    spriteBlueDragonLeftBlack = love.graphics.newImage("data/sprites/man_black/blue_left.png")
-    spriteBlueDragonRightBlack = love.graphics.newImage("data/sprites/man_black/blue_right.png")
-    spriteYellowDragonUpBlack = love.graphics.newImage("data/sprites/man_black/yellow_up.png")
-    spriteYellowDragonDownBlack = love.graphics.newImage("data/sprites/man_black/yellow_down.png")
-    spriteYellowDragonLeftBlack = love.graphics.newImage("data/sprites/man_black/yellow_left.png")
-    spriteYellowDragonRightBlack = love.graphics.newImage("data/sprites/man_black/yellow_right.png")
-    spriteGreenDragonUpBlack = love.graphics.newImage("data/sprites/man_black/green_up.png")
-    spriteGreenDragonDownBlack = love.graphics.newImage("data/sprites/man_black/green_down.png")
-    spriteGreenDragonLeftBlack = love.graphics.newImage("data/sprites/man_black/green_left.png")
-    spriteGreenDragonRightBlack = love.graphics.newImage("data/sprites/man_black/green_right.png")
-    spritePurpleDragonUpBlack = love.graphics.newImage("data/sprites/man_black/purple_up.png")
-    spritePurpleDragonDownBlack = love.graphics.newImage("data/sprites/man_black/purple_down.png")
-    spritePurpleDragonLeftBlack = love.graphics.newImage("data/sprites/man_black/purple_left.png")
-    spritePurpleDragonRightBlack = love.graphics.newImage("data/sprites/man_black/purple_right.png")
-    spritePinkDragonUpBlack = love.graphics.newImage("data/sprites/man_black/pink_up.png")
-    spritePinkDragonDownBlack = love.graphics.newImage("data/sprites/man_black/pink_down.png")
-    spritePinkDragonLeftBlack = love.graphics.newImage("data/sprites/man_black/pink_left.png")
-    spritePinkDragonRightBlack = love.graphics.newImage("data/sprites/man_black/pink_right.png")
-
-    spriteBlueDragonUpGreen = love.graphics.newImage("data/sprites/man_green/blue_up.png")
-    spriteBlueDragonDownGreen = love.graphics.newImage("data/sprites/man_green/blue_down.png")
-    spriteBlueDragonLeftGreen = love.graphics.newImage("data/sprites/man_green/blue_left.png")
-    spriteBlueDragonRightGreen = love.graphics.newImage("data/sprites/man_green/blue_right.png")
-    spriteYellowDragonUpGreen = love.graphics.newImage("data/sprites/man_green/yellow_up.png")
-    spriteYellowDragonDownGreen = love.graphics.newImage("data/sprites/man_green/yellow_down.png")
-    spriteYellowDragonLeftGreen = love.graphics.newImage("data/sprites/man_green/yellow_left.png")
-    spriteYellowDragonRightGreen = love.graphics.newImage("data/sprites/man_green/yellow_right.png")
-    spriteGreenDragonUpGreen = love.graphics.newImage("data/sprites/man_green/green_up.png")
-    spriteGreenDragonDownGreen = love.graphics.newImage("data/sprites/man_green/green_down.png")
-    spriteGreenDragonLeftGreen = love.graphics.newImage("data/sprites/man_green/green_left.png")
-    spriteGreenDragonRightGreen = love.graphics.newImage("data/sprites/man_green/green_right.png")
-    spritePurpleDragonUpGreen = love.graphics.newImage("data/sprites/man_green/purple_up.png")
-    spritePurpleDragonDownGreen = love.graphics.newImage("data/sprites/man_green/purple_down.png")
-    spritePurpleDragonLeftGreen = love.graphics.newImage("data/sprites/man_green/purple_left.png")
-    spritePurpleDragonRightGreen = love.graphics.newImage("data/sprites/man_green/purple_right.png")
-    spritePinkDragonUpGreen = love.graphics.newImage("data/sprites/man_green/pink_up.png")
-    spritePinkDragonDownGreen = love.graphics.newImage("data/sprites/man_green/pink_down.png")
-    spritePinkDragonLeftGreen = love.graphics.newImage("data/sprites/man_green/pink_left.png")
-    spritePinkDragonRightGreen = love.graphics.newImage("data/sprites/man_green/pink_right.png")
-
-    spriteBlueDragonUpRed = love.graphics.newImage("data/sprites/man_red/blue_up.png")
-    spriteBlueDragonDownRed = love.graphics.newImage("data/sprites/man_red/blue_down.png")
-    spriteBlueDragonLeftRed = love.graphics.newImage("data/sprites/man_red/blue_left.png")
-    spriteBlueDragonRightRed = love.graphics.newImage("data/sprites/man_red/blue_right.png")
-    spriteYellowDragonUpRed = love.graphics.newImage("data/sprites/man_red/yellow_up.png")
-    spriteYellowDragonDownRed = love.graphics.newImage("data/sprites/man_red/yellow_down.png")
-    spriteYellowDragonLeftRed = love.graphics.newImage("data/sprites/man_red/yellow_left.png")
-    spriteYellowDragonRightRed = love.graphics.newImage("data/sprites/man_red/yellow_right.png")
-    spriteGreenDragonUpRed = love.graphics.newImage("data/sprites/man_red/green_up.png")
-    spriteGreenDragonDownRed = love.graphics.newImage("data/sprites/man_red/green_down.png")
-    spriteGreenDragonLeftRed = love.graphics.newImage("data/sprites/man_red/green_left.png")
-    spriteGreenDragonRightRed = love.graphics.newImage("data/sprites/man_red/green_right.png")
-    spritePurpleDragonUpRed = love.graphics.newImage("data/sprites/man_red/purple_up.png")
-    spritePurpleDragonDownRed = love.graphics.newImage("data/sprites/man_red/purple_down.png")
-    spritePurpleDragonLeftRed = love.graphics.newImage("data/sprites/man_green/purple_left.png")
-    spritePurpleDragonRightRed = love.graphics.newImage("data/sprites/man_red/purple_right.png")
-    spritePinkDragonUpRed = love.graphics.newImage("data/sprites/man_red/pink_up.png")
-    spritePinkDragonDownRed = love.graphics.newImage("data/sprites/man_red/pink_down.png")
-    spritePinkDragonLeftRed = love.graphics.newImage("data/sprites/man_red/pink_left.png")
-    spritePinkDragonRightRed = love.graphics.newImage("data/sprites/man_red/pink_right.png")
-
-    sprite_button_down = love.graphics.newImage("data/sprites/buttons/down.png")
-    sprite_button_up = love.graphics.newImage("data/sprites/buttons/up.png")
-    sprite_button_left = love.graphics.newImage("data/sprites/buttons/left.png")
-    sprite_button_right = love.graphics.newImage("data/sprites/buttons/right.png")
+    -- 2. КНОПКИ УПРАВЛЕНИЯ
+    for _, dir in ipairs(directions) do _G["sprite_button_" .. dir] = love.graphics.newImage("sprites/buttons/" .. dir .. ".png") end
+    sprite_button_A = love.graphics.newImage("sprites/buttons/A.png")
+    sprite_button_B = love.graphics.newImage("sprites/buttons/B.png")
+ 
+    -- 3. БОМБЫ И БЛОКИ
+    bomb = love.graphics.newImage("sprites/bomb/boombox.png") 
+    boom = love.graphics.newImage("sprites/bomb/boom.png") 
+    block_break = love.graphics.newImage("sprites/blocks/break.png") 
+    block_hard = love.graphics.newImage("sprites/blocks/hard.png") 
+ 
+    -- 4. GUI И ИНТЕРФЕЙС
+    image_play_party    = love.graphics.newImage("sprites/gui/play_party.png")
+    image_play_local    = love.graphics.newImage("sprites/gui/play_local.png")
+    image_play_game     = love.graphics.newImage("sprites/gui/start.png")
+    image_create_server = love.graphics.newImage("sprites/localhost/create_server.png")
+    image_join_server   = love.graphics.newImage("sprites/localhost/join_server.png")
+    image_TextBox       = love.graphics.newImage("sprites/localhost/textBox.png")
+    image_TextBox_Active = love.graphics.newImage("sprites/localhost/textBoxActive.png")
+    image_play          = love.graphics.newImage("sprites/gui/play.png")
+    image_btn_select    = love.graphics.newImage("sprites/gui/select_btns.png")
+    image_btn_cancel    = love.graphics.newImage("sprites/gui/cancel_btns.png")
+    image_waitings      = love.graphics.newImage("sprites/gui/waitings.png")
+    image_sure_leave    = love.graphics.newImage("sprites/gui/sure_leave.png")
+    image_continue      = love.graphics.newImage("sprites/gui/continue.png")
+    image_leave         = love.graphics.newImage("sprites/gui/leave.png")
+    image_settings      = love.graphics.newImage("sprites/gui/settings.png")
+    background_wall     = love.graphics.newImage("sprites/gui/background.png")
     
-    sprite_button_A = love.graphics.newImage("data/sprites/buttons/A.png")
-    sprite_button_B = love.graphics.newImage("data/sprites/buttons/B.png")
- 
-    bomb = love.graphics.newImage("data/sprites/bomb/boombox.png") 
-    boom = love.graphics.newImage("data/sprites/bomb/boom.png") 
- 
-    block_break = love.graphics.newImage("data/sprites/blocks/break.png") 
-    block_hard = love.graphics.newImage("data/sprites/blocks/hard.png") 
- 
-    image_play_party = love.graphics.newImage("data/sprites/gui/play_party.png")
-    image_play_local = love.graphics.newImage("data/sprites/gui/play_local.png")
-    image_play_game = love.graphics.newImage("data/sprites/gui/start.png")
-    image_create_server = love.graphics.newImage("data/sprites/localhost/create_server.png")
-    image_join_server = love.graphics.newImage("data/sprites/localhost/join_sever.png")
-    image_TextBox = love.graphics.newImage("data/sprites/localhost/textBox.png")
-    image_TextBox_Active = love.graphics.newImage("data/sprites/localhost/textBoxActive.png")
-    image_play = love.graphics.newImage("data/sprites/gui/play.png")
-    image_btn_select = love.graphics.newImage("data/sprites/gui/select_btns.png")
-    image_waitings = love.graphics.newImage("data/sprites/gui/waitings.png")
-    
-    buff_bomb_image = love.graphics.newImage("data/sprites/buffs/bomb.png")
-    buff_fire_image = love.graphics.newImage("data/sprites/buffs/fire.png")
-    buff_skull_image = love.graphics.newImage("data/sprites/buffs/skull.png")
-    buff_kick_image = love.graphics.newImage("data/sprites/buffs/kick.png")
-    buff_line_image = love.graphics.newImage("data/sprites/buffs/line.png")
-    buff_egg_image = love.graphics.newImage("data/sprites/buffs/egg.png")
+    -- 5. БАФФЫ
+    local buffs = {"bomb", "fire", "skull", "kick", "line", "egg"}
+    for _, b in ipairs(buffs) do
+        _G["buff_" .. b .. "_image"] = love.graphics.newImage("sprites/buffs/" .. b .. ".png")
+    end
 
-    choose_white_image = love.graphics.newImage("data/sprites/choose character/white.png")
-    choose_black_image = love.graphics.newImage("data/sprites/choose character/black.png")
-    choose_green_image = love.graphics.newImage("data/sprites/choose character/green.png")
-    choose_red_image = love.graphics.newImage("data/sprites/choose character/red.png")
-    choose_NoPlayer_image = love.graphics.newImage("data/sprites/choose character/no_player.png")
+    -- 6. ВЫБОР ПЕРСОНАЖА (Choose Character)
+    local choose_colors = {"white", "black", "green", "red", "NoPlayer"}
+    for _, c in ipairs(choose_colors) do
+        local file = (c == "NoPlayer") and "no_player" or c
+        _G["choose_" .. c .. "_image"] = love.graphics.newImage("sprites/choose character/" .. file .. ".png")
+    end
 
-    choose_gamepad_image = love.graphics.newImage("data/sprites/choose character/gamepad_player.png")
-    choose_keyboard_image = love.graphics.newImage("data/sprites/choose character/keyboard_player.png")
-    choose_touch_image = love.graphics.newImage("data/sprites/choose character/touch_player.png")
+    local choose_types = {gamepad = "gamepad_player", keyboard = "keyboard_player", touch = "touch_player"}
+    for key, file in pairs(choose_types) do
+        _G["choose_" .. key .. "_image"] = love.graphics.newImage("sprites/choose character/" .. file .. ".png")
+    end
 
-    choose_P1 = love.graphics.newImage("data/sprites/choose character/P1.png")
-    choose_P2 = love.graphics.newImage("data/sprites/choose character/P2.png")
-    choose_P3 = love.graphics.newImage("data/sprites/choose character/P3.png")
-    choose_P4 = love.graphics.newImage("data/sprites/choose character/P4.png")
+    for i = 1, 4 do
+        _G["choose_P" .. i] = love.graphics.newImage("sprites/choose character/P" .. i .. ".png")
+        _G["choose_BOT" .. i] = love.graphics.newImage("sprites/choose character/BOT" .. i .. ".png")
+    end
 
-    choose_BOT1 = love.graphics.newImage("data/sprites/choose character/BOT1.png")
-    choose_BOT2 = love.graphics.newImage("data/sprites/choose character/BOT2.png")
-    choose_BOT3 = love.graphics.newImage("data/sprites/choose character/BOT3.png")
-    choose_BOT4 = love.graphics.newImage("data/sprites/choose character/BOT4.png")
+    local choose_states = {"ready", "notready", "leave", "notleave"}
+    for _, state in ipairs(choose_states) do
+        local file = (state == "notready") and "not ready" or (state == "notleave") and "not leave" or state
+        _G["choose_" .. state] = love.graphics.newImage("sprites/choose character/" .. file .. ".png")
+    end
 
-    choose_ready = love.graphics.newImage("data/sprites/choose character/ready.png")
-    choose_notready = love.graphics.newImage("data/sprites/choose character/not ready.png")
-    choose_leave = love.graphics.newImage("data/sprites/choose character/leave.png")
-    choose_notleave = love.graphics.newImage("data/sprites/choose character/not leave.png")
+    -- 7. ЭКРАН ПОБЕДЫ
+    win_black_image = love.graphics.newImage("sprites/win_mode/black.png")
+    win_green_image = love.graphics.newImage("sprites/win_mode/green.png")
+    win_red_image   = love.graphics.newImage("sprites/win_mode/red.png")
+    win_white_image = love.graphics.newImage("sprites/win_mode/white.png")
+    win_cup_image   = love.graphics.newImage("sprites/win_mode/cup.png")
 
-    background_wall = love.graphics.newImage("data/sprites/gui/background.png")
+    -- 8. МОДИФИКАТОРЫ
+    spriteModificatorRounds    = love.graphics.newImage("sprites/modificators/rounds.png")
+    spriteModificatorTeamsOn  = love.graphics.newImage("sprites/modificators/teams_on.png")
+    spriteModificatorTeamsOff = love.graphics.newImage("sprites/modificators/teams_off.png")
+    spriteModificatorTeams     = love.graphics.newImage("sprites/modificators/teams.png")
 
-    win_black_inage = love.graphics.newImage("data/sprites/win_mode/black.png")
-    win_green_image = love.graphics.newImage("data/sprites/win_mode/green.png")
-    win_red_image = love.graphics.newImage("data/sprites/win_mode/red.png")
-    win_white_image = love.graphics.newImage("data/sprites/win_mode/white.png")
-    win_cup_image = love.graphics.newImage("data/sprites/win_mode/cup.png")
+    local nums = {"One", "Two", "Three", "Four", "Five"}
+    for _, num in ipairs(nums) do
+        local file = num:lower()
+        _G["spriteModificator" .. num .. "No"]  = love.graphics.newImage("sprites/modificators/" .. file .. "_no.png")
+        _G["spriteModificator" .. num .. "Yes"] = love.graphics.newImage("sprites/modificators/" .. file .. "_yes.png")
+    end
 
-    spriteModificatorRounds = love.graphics.newImage("data/sprites/modificators/rounds.png")
-    spriteModificatorTeamsOn = love.graphics.newImage("data/sprites/modificators/teams_on.png")
-    spriteModificatorTeamsOff = love.graphics.newImage("data/sprites/modificators/teams_off.png")
-    spriteModificatorTeams = love.graphics.newImage("data/sprites/modificators/teams.png")
-
-    spriteModificatorOneNo = love.graphics.newImage("data/sprites/modificators/one_no.png")
-    spriteModificatorOneYes = love.graphics.newImage("data/sprites/modificators/one_yes.png")
-    spriteModificatorTwoNo = love.graphics.newImage("data/sprites/modificators/two_no.png")
-    spriteModificatorTwoYes = love.graphics.newImage("data/sprites/modificators/two_yes.png")
-    spriteModificatorThreeNo = love.graphics.newImage("data/sprites/modificators/three_no.png")
-    spriteModificatorThreeYes = love.graphics.newImage("data/sprites/modificators/three_yes.png")
-    spriteModificatorFourNo = love.graphics.newImage("data/sprites/modificators/four_no.png")
-    spriteModificatorFourYes = love.graphics.newImage("data/sprites/modificators/four_yes.png")
-    spriteModificatorFiveNo = love.graphics.newImage("data/sprites/modificators/five_no.png")
-    spriteModificatorFiveYes = love.graphics.newImage("data/sprites/modificators/five_yes.png")
+    -- 9. НАСТРОЙКИ
+    image_musicOn = love.graphics.newImage("sprites/settings/musicOn.png")
+    image_musicOff = love.graphics.newImage("sprites/settings/musicOff.png")
+    image_soundOn = love.graphics.newImage("sprites/settings/soundOn.png")
+    image_soundOff = love.graphics.newImage("sprites/settings/soundOff.png")
+    image_tutorial = love.graphics.newImage("sprites/settings/tutorial.png")
 end

@@ -260,9 +260,35 @@ function SwitchToMenu()
     InputFocus = ""
     cursorPos = 0
 end
+
+function SUREEXIT()
+    blur.isPaused = false
+    fade.state = "out"
+    GAME = "transition"
+    NumberOfPlayers = 0
+    ReadyPlayers = 0
+    TimeToExit = 3.0
+    ExitFromWinnersTime = 5.0
+    ButtonAnimation.position = 1
+    blur.isPaused = false
+    Players = {}
+    objects = {} 
+    pieces = {}
+    buffs = {}
+    for _, i in ipairs(breaks) do i.isExploded = false end
+    spawnPlayers()
+    SpawnBuffs()
+
+    whiteDeathAnimation.anim:gotoFrame(1)
+    blackDeathAnimation.anim:gotoFrame(1)
+    greenDeathAnimation.anim:gotoFrame(1)
+    redDeathAnimation.anim:gotoFrame(1)
+
+    fade.level = "gui"
+end
  
 function Exit()
-    if GAME ~= "gui" and GAME ~= "WaitForReady" then
+    if GAME ~= "gui" and GAME ~= "WaitForReady" and GAME ~= "game" then
         fade.state = "out"
         GAME = "transition"
         NumberOfPlayers = 0
@@ -270,6 +296,7 @@ function Exit()
         TimeToExit = 3.0
         ExitFromWinnersTime = 5.0
         ButtonAnimation.position = 1
+        blur.isPaused = false
         Players = {}
         objects = {} 
         pieces = {}
@@ -284,6 +311,8 @@ function Exit()
         redDeathAnimation.anim:gotoFrame(1)
 
         fade.level = "gui"
+    elseif GAME == "game" then
+        blur.toggle(DrawGame)
     elseif GAME == "gui" then
         love.event.quit()
     elseif GAME == "WaitForReady" then
