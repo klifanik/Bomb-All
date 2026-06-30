@@ -88,10 +88,23 @@ function C.click(x, y, btnCode, isTouch)
                             ButtonAnimation.position = 1
                         end
                     end
+
+                    if p.controller == currentInput then
+                        if checkClick(x, y, {x = 140, y = 100, width = 170, height = 215, scale = 1}) then
+                            if p.positionNumber == 1 then registerPlayer("bot", nil, true, 2) else p.positionNumber = 1 end
+                        elseif checkClick(x, y, {x = 390, y = 100, width = 170, height = 215, scale = 1}) then
+                            if p.positionNumber == 2 then registerPlayer("bot", nil, true, 2) else p.positionNumber = 2 end
+                        elseif checkClick(x, y, {x = 640, y = 100, width = 170, height = 215, scale = 1}) then
+                            if p.positionNumber == 3 then registerPlayer("bot", nil, true, 3) else p.positionNumber = 3 end
+                        elseif checkClick(x, y, {x = 890, y = 100, width = 170, height = 215, scale = 1}) then
+                            if p.positionNumber == 4 then registerPlayer("bot", nil, true, 4) else p.positionNumber = 4 end
+                        end
+                    end
                 end
             end
             
-            if not actionTaken and isTouch then registerPlayer("touch", 0); hasTouch = true end
+            if not actionTaken then registerPlayer(currentInput, nil, false, 0) end
+            hasTouch = isTouch
 
         --[[elseif GAME == "choose_server" then
             if not actionTaken then
@@ -114,159 +127,157 @@ function C.click(x, y, btnCode, isTouch)
         ]]
         
         elseif GAME == "change_modificator" then
-            if not actionTaken then
-                if checkClick(x, y, NumbersButtons[1]) then
-                    if NumberAnimation.position == 1 then
-                        if not NumbersButtons[1].active then
-                            for _, i in ipairs(NumbersButtons) do i.active = false end
-                            NumbersButtons[1].active = true
-                            WINS = 1
-                        end
-                    else
-                        NumberAnimation.position = 1
-                        ButtonAnimation.position = 1
+            if checkClick(x, y, NumbersButtons[1]) then
+                if NumberAnimation.position == 1 then
+                    if not NumbersButtons[1].active then
+                        for _, i in ipairs(NumbersButtons) do i.active = false end
+                        NumbersButtons[1].active = true
+                        WINS = 1
                     end
-                elseif checkClick(x, y, NumbersButtons[2]) then
-                    if NumberAnimation.position == 2 then
-                        if not NumbersButtons[2].active then
-                            for _, i in ipairs(NumbersButtons) do i.active = false end
-                            NumbersButtons[2].active = true
-                            WINS = 2
-                        end
-                    else
-                        NumberAnimation.position = 2
-                        ButtonAnimation.position = 1
+                else
+                    NumberAnimation.position = 1
+                    ButtonAnimation.position = 1
+                end
+            elseif checkClick(x, y, NumbersButtons[2]) then
+                if NumberAnimation.position == 2 then
+                    if not NumbersButtons[2].active then
+                        for _, i in ipairs(NumbersButtons) do i.active = false end
+                        NumbersButtons[2].active = true
+                        WINS = 2
                     end
-                elseif checkClick(x, y, NumbersButtons[3]) then
-                    if NumberAnimation.position == 3 then
-                        if not NumbersButtons[3].active then
-                            for _, i in ipairs(NumbersButtons) do i.active = false end
-                            NumbersButtons[3].active = true
-                            WINS = 3
-                        end
-                    else
-                        NumberAnimation.position = 3
-                        ButtonAnimation.position = 1
+                else
+                    NumberAnimation.position = 2
+                    ButtonAnimation.position = 1
+                end
+            elseif checkClick(x, y, NumbersButtons[3]) then
+                if NumberAnimation.position == 3 then
+                    if not NumbersButtons[3].active then
+                        for _, i in ipairs(NumbersButtons) do i.active = false end
+                        NumbersButtons[3].active = true
+                        WINS = 3
                     end
-                elseif checkClick(x, y, NumbersButtons[4]) then
-                    if NumberAnimation.position == 4 then
-                        if not NumbersButtons[4].active then
-                            for _, i in ipairs(NumbersButtons) do i.active = false end
-                            NumbersButtons[4].active = true
-                            WINS = 4
-                        end
-                    else
-                        NumberAnimation.position = 4
-                        ButtonAnimation.position = 1
+                else
+                    NumberAnimation.position = 3
+                    ButtonAnimation.position = 1
+                end
+            elseif checkClick(x, y, NumbersButtons[4]) then
+                if NumberAnimation.position == 4 then
+                    if not NumbersButtons[4].active then
+                        for _, i in ipairs(NumbersButtons) do i.active = false end
+                        NumbersButtons[4].active = true
+                        WINS = 4
                     end
-                elseif checkClick(x, y, NumbersButtons[5]) then
-                    if NumberAnimation.position == 5 then
-                        if not NumbersButtons[5].active then
-                            for _, i in ipairs(NumbersButtons) do i.active = false end
-                            NumbersButtons[5].active = true
-                            WINS = 5
-                        end
-                    else
-                        NumberAnimation.position = 5
-                        ButtonAnimation.position = 1
+                else
+                    NumberAnimation.position = 4
+                    ButtonAnimation.position = 1
+                end
+            elseif checkClick(x, y, NumbersButtons[5]) then
+                if NumberAnimation.position == 5 then
+                    if not NumbersButtons[5].active then
+                        for _, i in ipairs(NumbersButtons) do i.active = false end
+                        NumbersButtons[5].active = true
+                        WINS = 5
                     end
-                elseif checkClick(x, y, button_teams) then
-                    if ButtonAnimation.position == 2 then
-                        if button_teams.active then
-                            button_teams.active = false
-                            button_teams.image = spriteModificatorTeamsOff
-                        else
-                            button_teams.active = true
-                            button_teams.image = spriteModificatorTeamsOn
-                        end
+                else
+                    NumberAnimation.position = 5
+                    ButtonAnimation.position = 1
+                end
+            elseif checkClick(x, y, button_teams) then
+                if ButtonAnimation.position == 2 then
+                    if button_teams.active then
+                        button_teams.active = false
+                        button_teams.image = spriteModificatorTeamsOff
                     else
-                        ButtonAnimation.position = 2
+                        button_teams.active = true
+                        button_teams.image = spriteModificatorTeamsOn
                     end
-                elseif checkClick(x, y, button_play_game) then
-                    local blue = 0
-                    local red = 0
-                    local totalPlaying = 0
+                else
+                    ButtonAnimation.position = 2
+                end
+            elseif checkClick(x, y, button_play_game) then
+                local blue = 0
+                local red = 0
+                local totalPlaying = 0
 
-                    for _, p in ipairs(Players) do 
-                        if p.playing then 
-                            totalPlaying = totalPlaying + 1
-                            
-                            if p.team == "blue" then 
-                                blue = blue + 1 
-                            elseif p.team == "red" then 
-                                red = red + 1 
-                            end 
+                for _, p in ipairs(Players) do 
+                    if p.playing then 
+                        totalPlaying = totalPlaying + 1
+                        
+                        if p.team == "blue" then 
+                            blue = blue + 1 
+                        elseif p.team == "red" then 
+                            red = red + 1 
                         end 
-                    end
+                    end 
+                end
 
-                    if button_teams.active then
-                        if red > 0 and blue > 0 then
-                            fade.state = "out"
-                            ReSpawnPlayers()
-                            fade.level = "game"
+                if button_teams.active then
+                    if red > 0 and blue > 0 then
+                        fade.state = "out"
+                        ReSpawnPlayers()
+                        fade.level = "game"
+                    end
+                else
+                    if totalPlaying >= 2 then
+                        fade.state = "out"
+                        ReSpawnPlayers()
+                        fade.level = "game"
+                    end
+                end
+            elseif checkClick(x, y, {x = (targetWidth / 2) - ((spriteModificatorTeams:getWidth() * 0.85) / 2), y = 300, width = 95, height = spriteModificatorTeams:getHeight() * 0.85, scale = 1}) then
+                if button_teams.active then
+                    if ButtonAnimation.position == 3 then
+                        if Players[1] and Players[1].team == "blue" then
+                            Players[1].team = "red"
+                        else
+                            Players[1].team = "blue"
                         end
+                        NumberAnimation.position = 1
                     else
-                        if totalPlaying >= 2 then
-                            fade.state = "out"
-                            ReSpawnPlayers()
-                            fade.level = "game"
-                        end
+                        ButtonAnimation.position = 3
+                        NumberAnimation.position = 1
                     end
-                elseif checkClick(x, y, {x = (targetWidth / 2) - ((spriteModificatorTeams:getWidth() * 0.85) / 2), y = 300, width = 95, height = spriteModificatorTeams:getHeight() * 0.85, scale = 1}) then
-                    if button_teams.active then
-                        if ButtonAnimation.position == 3 then
-                            if Players[1] and Players[1].team == "blue" then
-                                Players[1].team = "red"
-                            else
-                                Players[1].team = "blue"
-                            end
-                            NumberAnimation.position = 1
+                end
+            elseif checkClick(x, y, {x = (targetWidth / 2) - ((spriteModificatorTeams:getWidth() * 0.85) / 2) + 95, y = 300, width = 90, height = spriteModificatorTeams:getHeight() * 0.85, scale = 1}) then
+                if button_teams.active then
+                    if ButtonAnimation.position == 3 then
+                        if Players[2] and Players[2].team == "blue" then
+                            Players[2].team = "red"
                         else
-                            ButtonAnimation.position = 3
-                            NumberAnimation.position = 1
+                            Players[2].team = "blue"
                         end
+                        NumberAnimation.position = 2
+                    else
+                        ButtonAnimation.position = 3
+                        NumberAnimation.position = 2
                     end
-                elseif checkClick(x, y, {x = (targetWidth / 2) - ((spriteModificatorTeams:getWidth() * 0.85) / 2) + 95, y = 300, width = 90, height = spriteModificatorTeams:getHeight() * 0.85, scale = 1}) then
-                    if button_teams.active then
-                        if ButtonAnimation.position == 3 then
-                            if Players[2] and Players[2].team == "blue" then
-                                Players[2].team = "red"
-                            else
-                                Players[2].team = "blue"
-                            end
-                            NumberAnimation.position = 2
+                end
+            elseif checkClick(x, y, {x = (targetWidth / 2) - ((spriteModificatorTeams:getWidth() * 0.85) / 2) + 185, y = 300, width = 95, height = spriteModificatorTeams:getHeight() * 0.85, scale = 1}) then
+                if button_teams.active then
+                    if ButtonAnimation.position == 3 then
+                        if Players[3] and Players[2].team == "blue" then
+                            Players[3].team = "red"
                         else
-                            ButtonAnimation.position = 3
-                            NumberAnimation.position = 2
+                            Players[3].team = "blue"
                         end
+                        NumberAnimation.position = 3
+                    else
+                        ButtonAnimation.position = 3
+                        NumberAnimation.position = 3
                     end
-                elseif checkClick(x, y, {x = (targetWidth / 2) - ((spriteModificatorTeams:getWidth() * 0.85) / 2) + 185, y = 300, width = 95, height = spriteModificatorTeams:getHeight() * 0.85, scale = 1}) then
-                    if button_teams.active then
-                        if ButtonAnimation.position == 3 then
-                            if Players[3] and Players[2].team == "blue" then
-                                Players[3].team = "red"
-                            else
-                                Players[3].team = "blue"
-                            end
-                            NumberAnimation.position = 3
+                end
+            elseif checkClick(x, y, {x = (targetWidth / 2) - ((spriteModificatorTeams:getWidth() * 0.85) / 2) + 280, y = 300, width = 95, height = spriteModificatorTeams:getHeight() * 0.85, scale = 1}) then
+                if button_teams.active then
+                    if ButtonAnimation.position == 3 then
+                        if Players[4] and Players[2].team == "blue" then
+                            Players[4].team = "red"
                         else
-                            ButtonAnimation.position = 3
-                            NumberAnimation.position = 3
+                            Players[4].team = "blue"
                         end
-                    end
-                elseif checkClick(x, y, {x = (targetWidth / 2) - ((spriteModificatorTeams:getWidth() * 0.85) / 2) + 280, y = 300, width = 95, height = spriteModificatorTeams:getHeight() * 0.85, scale = 1}) then
-                    if button_teams.active then
-                        if ButtonAnimation.position == 3 then
-                            if Players[4] and Players[2].team == "blue" then
-                                Players[4].team = "red"
-                            else
-                                Players[4].team = "blue"
-                            end
-                            NumberAnimation.position = 4
-                        else
-                            ButtonAnimation.position = 3
-                            NumberAnimation.position = 4
-                        end
+                        NumberAnimation.position = 4
+                    else
+                        ButtonAnimation.position = 3
+                        NumberAnimation.position = 4
                     end
                 end
             end

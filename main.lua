@@ -2,26 +2,30 @@ _G.love = require("love")
 if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then require("lldebugger").start() end
 
 function love.load()
-    anim8 = require("scripts/anim8")
-    inputSys = require("scripts/input_system")
-    chelImage = require("scripts/chel_img")
-    updFunc = require("scripts/upd_func")
-    miniFunc = require("scripts/mini_functions")
-    init = require("scripts/init")
-    initOther = require("scripts/init_other")
-    initBtns = require("scripts/init_btns")
-    Drawings = require("scripts/drawings")
-    ClickMouse = require("scripts/click")
-    ServerModule = require "scripts/server_module"
-    ClientModule = require "scripts/client_module"
-    PlayerScript = require "scripts/player"
-    blur = require("scripts/blur")
+    anim8           = require("scripts/anim8")
+    inputSys        = require("scripts/input_system")
+    chelImage       = require("scripts/chel_img")
+    updFunc         = require("scripts/upd_func")
+    miniFunc        = require("scripts/mini_functions")
+    Drawings        = require("scripts/drawings")
+    ClickMouse      = require("scripts/click")
+    ServerModule    = require "scripts/server_module"
+    ClientModule    = require "scripts/client_module"
+    PlayerScript    = require "scripts/player"
+    blur            = require("scripts/blur")
+    BOTScode        = require("scripts/Bot")
+
+    init            = require("scripts/init/init")
+    initOther       = require("scripts/init/init_other")
+    initBtns        = require("scripts/init/init_btns")
+    initAnimations  = require("scripts/init/init_anim")
     
     love.joystick.loadGamepadMappings("scripts/gamecontrollerdb.txt")
 
     initializationSprites()
     InitializationOther()
     InitButtons()
+    InitAnims()
     blur.load()
 
     local iconData = love.image.newImageData("icon.png")
@@ -48,19 +52,36 @@ function love.joystickremoved(joystick)
         if player.playing and player.controller == "gamepad" and player.id == joystick then
             player.playing = false
             player.controller = "none"
-            player.id = 0
+            player.idJoy = 0
+            player.Joy = 0
             player.image = choose_NoPlayer_image
             NumberOfPlayers = NumberOfPlayers - 1
         end
     end
 end
 
-function love.update(DeltaTime)
+local timeScale = 1.0
+function love.update(dt)
+    if love.keyboard.isDown("lshift") then
+        timeScale = 10.0
+    else
+        timeScale = 1.0
+    end
+
+    local DeltaTime = dt * timeScale
+
     ButtonAnimation.anim:update(DeltaTime)
+
     if blur.isPaused then return end
+
     updFunc.update(DeltaTime)
     ChosenAnimation.anim:update(DeltaTime)
     NumberAnimation.anim:update(DeltaTime)
+
+    ChosenAnimationP1.anim:update(DeltaTime)
+    ChosenAnimationP2.anim:update(DeltaTime)
+    ChosenAnimationP3.anim:update(DeltaTime)
+    ChosenAnimationP4.anim:update(DeltaTime)
 
     if myServer then myServer:update(DeltaTime) end
     if myClient then myClient:update(DeltaTime) end
@@ -102,6 +123,7 @@ function love.textinput(t)
 end
 
 function love.keypressed(key)
+    if key ~= "escape" then love.mouse.setPosition(0, 0) end
     hasKeyboard = true
     if key == "escape" and GAME ~= "choose_character" and GAME ~= "SETUP_CREATE" and GAME ~= "SETUP_JOIN" then
         Exit()
@@ -149,7 +171,7 @@ function love.keypressed(key)
                 cursorPos = utf8.len(s)
             end
         end
-    elseif GAME == "game" and blur.isPaused then inputSys.ControlGui({id = nil, controller = "keyboard"}, nil, key, "keyboard") return
+    elseif GAME == "game" and blur.isPaused then inputSys.ControlGui({idJoy = nil, Joy = nil, controller = "keyboard"}, nil, key, "keyboard")
     end
     for _, p in ipairs(Players) do
         if GAME == "game" then
@@ -159,7 +181,7 @@ function love.keypressed(key)
             end
         elseif GAME == "choose_character" then
             if p.controller == "keyboard" then inputSys.ControlGui(p, nil, key, "keyboard"); break end
-            registerPlayer("keyboard", 0)
+            registerPlayer("keyboard", nil, false, 0)
         elseif (GAME == "choose_server" or GAME == "change_modificator" or GAME == "WaitForReady") and p.controller == "keyboard" then
             inputSys.ControlGui(p, nil, key, "keyboard"); break
         elseif GAME == "gui" then inputSys.ControlGui(nil, nil, key, "keyboard"); break
@@ -183,6 +205,7 @@ function love.touchpressed(id, x, y)
 end
 
 local last_axis_state = {x = 0, y = 0}
+local triggerState = {triggerleft = false, triggerright = false}
 
 function love.gamepadaxis(joy, axis, value)
     local threshold = 0.5
@@ -214,59 +237,68 @@ function love.gamepadaxis(joy, axis, value)
                 command = (current_dir == 1) and "dpright" or "dpleft"
             end
         end
+    elseif axis == "triggerleft" or axis == "triggerright" then
+        if GAME == "choose_character" then
+            local found_player = false
+
+            for _, p in ipairs(Players) do
+                if p.idJoy == joy:getID() and p.controller == "gamepad" then
+                    found_player = true
+
+                    local isPressed = value > 0.3
+                    
+                    if isPressed ~= triggerState[axis] then
+                        triggerState[axis] = isPressed
+                        local btn = (axis == "triggerleft") and "LT" or "RT"
+                        
+                        if isPressed then inputSys.ControlGui(p, joy, btn, "gamepad") end
+                        break
+                    end
+
+                end
+            end
+
+            if not found_player then registerPlayer("gamepad", joy, false, 0) end
+        end
     end
 
     if command then
         if GAME == "gui" or GAME == "choose_server" or GAME == "change_modificator" then
-            inputSys.ControlGui({id = joy, controller = "gamepad"}, joy, command, "gamepad")
+            inputSys.ControlGui({idJoy = joy:getID(), Joy = joy, controller = "gamepad"}, joy, command, "gamepad")
 
         elseif GAME == "choose_character" then
             local found_player = false
             for _, p in ipairs(Players) do
-                if p.id == joy and p.controller == "gamepad" then
+                if p.idJoy == joy:getID() and p.controller == "gamepad" then
                     found_player = true
                     inputSys.ControlGui(p, joy, command, "gamepad")
                     break
                 end
             end
             
-            if not found_player then registerPlayer("gamepad", joy) end
+            if not found_player then registerPlayer("gamepad", joy, false, 0) end
 
-        elseif GAME == "game" and blur.isPaused then inputSys.ControlGui({id = joy, controller = "gamepad"}, joy, command, "gamepad")
+        elseif GAME == "game" and blur.isPaused then inputSys.ControlGui({idJoy = joy:getID(), Joy = joy, controller = "gamepad"}, joy, command, "gamepad")
         end
     end
 end
 
 function love.gamepadpressed(joy, btn)
     hasGamepad = true
-    if btn == "b" and GAME ~= "game" and GAME ~= "choose_character" then
-        Exit()
-    elseif GAME == "game" then
-        if btn == "start" and not blur.isPaused then
-            Exit()
-        else
-            inputSys.ControlGui({id = joy, controller = "gamepad"}, joy, btn, "gamepad") return
-        end
-    elseif GAME == "choose_character" and btn == "b" then
-        for _, p in ipairs(Players) do
-            if p.id == joy and p.ready then
-                p.ready = false
-                ReadyPlayers = ReadyPlayers - 1
-                return
-            elseif p.id == joy and not p.ready then Exit()
-            end
-        end
+    if btn == "b" and GAME ~= "game" and GAME ~= "choose_character" then Exit()
+    elseif GAME == "game" and btn == "start" then Exit()
+    elseif GAME == "game" and blur.isPaused then inputSys.ControlGui({idJoy = joy:getID(), Joy = joy, controller = "gamepad"}, joy, btn, "gamepad") if btn == "a" or btn == "b" then return end
     end
     for _, p in ipairs(Players) do
         if GAME == "game" then
-            if p.playing and p.controller == "gamepad" and p.id == joy then
+            if p.playing and p.controller == "gamepad" and p.idJoy == joy:getID() then
                 if btn == "a" then inputSys.performAction("bomb", p)
                 elseif btn == "b" then inputSys.performAction("special", p) end
             end
         elseif GAME == "choose_character" then
-            if p.id == joy and p.controller == "gamepad" then inputSys.ControlGui(p, joy, btn, "gamepad"); break end
-            registerPlayer("gamepad", joy)
-        elseif (GAME == "choose_server" or GAME == "change_modificator") and (p.id == joy and p.controller == "gamepad") then
+            if p.idJoy == joy:getID() and p.controller == "gamepad" and p.Joy == joy then inputSys.ControlGui(p, joy, btn, "gamepad"); break end
+            registerPlayer("gamepad", joy, false, 0)
+        elseif (GAME == "choose_server" or GAME == "change_modificator") and (p.idJoy == joy:getID() and p.controller == "gamepad") then
             inputSys.ControlGui(p, joy, btn, "gamepad"); break
         elseif GAME == "gui" then inputSys.ControlGui(nil, joy, btn, "gamepad"); break
         end

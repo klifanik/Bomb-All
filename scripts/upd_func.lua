@@ -1,5 +1,6 @@
-init_other = require ("scripts/init_other")
-init = require ("scripts/init")
+init_other = require ("scripts/init/init_other")
+init = require ("scripts/init/init")
+local BotAI = require("scripts/Bot")
 
 local U = {}
 
@@ -63,7 +64,7 @@ function U.update(dt)
                 if player.playing and not player.unbreakable then
                     local dx, dy = inputSys.getMovement(player)
                     if dx ~= 0 or dy ~= 0 then
-                        player.x, player.y = player.x + dx * player.speed, player.y + dy * player.speed
+                        player.x, player.y = player.x + dx * player.speed * 90 * dt, player.y + dy * player.speed * 90 * dt
                         player.direction = (dx > 0 and "right") or (dx < 0 and "left") or (dy > 0 and "down") or "up"
                         player.size = (dx ~= 0) and 0.3 or 0.25
                     end
@@ -74,7 +75,7 @@ function U.update(dt)
     end
 
     for i, player in ipairs(Players) do
-        if player.x < 5 then player.x = 5 end 
+        if player.x < 0 then player.x = 0 end 
         if player.y < 0 and not player.unbreakable then player.y = 0 end 
         if player.x > 1135 then player.x = 1135 end 
         if player.y > 645 then player.y = 645 end
@@ -93,7 +94,7 @@ function U.update(dt)
             end
             
             -- Логика завершения действия вируса (ваша существующая)
-            if player.buba and love.timer.getTime() - player.buba < 30 then
+            if player.buba and love.timer.getTime() - player.buba < 20 then
                 if player.virus == 2 and player.BOMBS > 0 then
                     local gridX = round(player.x / long) * long
                     local gridY = round(player.y / long) * long
@@ -113,7 +114,7 @@ function U.update(dt)
                     end
                 end
 
-                for _, p in ipairs(Players) do if checkCollision(player, p) then p.virus = player.virus; p.buba = player.buba end end
+                for _, p in ipairs(Players) do if checkCollision(player, p) and p.virus == 0 then p.virus = player.virus; p.buba = player.buba end end
 
                 if player.virus == 3 then player.BOMBS = 0 end
                 if player.virus == 4 then player.FIRE = 1 end
@@ -355,6 +356,7 @@ function U.update(dt)
                     jumpBaseY = player.y
                 else
                     if not player.unbreakable and player.playing then
+                        PlayerDeathing(player)
                         NumberOfPlayers = NumberOfPlayers - 1
                         player.playing = false
                         player.death = true
@@ -376,6 +378,7 @@ function U.update(dt)
                         jumpBaseY = player.y
                     else
                         if not player.unbreakable and player.playing then
+                            PlayerDeathing(player)
                             NumberOfPlayers = NumberOfPlayers - 1
                             player.playing = false
                             player.death = true
@@ -443,6 +446,22 @@ function U.update(dt)
                     fade.level = "winners"
                 end
             end
+        end
+    end
+
+    for id, timeLeft in pairs(activeVibrations) do
+        local joystick = getJoystickByID(id)
+        
+        if joystick and joystick:isVibrationSupported() then
+            if timeLeft > 0 then
+                activeVibrations[id] = timeLeft - dt
+            else
+                joystick:setVibration(0, 0)
+                activeVibrations[id] = nil
+            end
+        else
+            -- Если джойстика больше нет или он не поддерживает вибрацию
+            activeVibrations[id] = nil
         end
     end
 
@@ -548,6 +567,79 @@ function U.update(dt)
         _G.backspaceRepeatTimer = 0
     end
 
+    for id, gamer in ipairs(Players) do
+        -- Жесткие условия игры: проверяем сцену, отсутствие затухания экрана и то, что игрок существует и жив
+        if GAME == "game" and fade.state == "idle" and gamer and not gamer.death and gamer.playing then
+            
+            if gamer.bot then
+                -- 1. Собираем массив всех угроз на игровой карте
+                local dangerousTilesForBot = {}
+                
+                -- Ищем тикающие бомбы в таблице объектов
+                for _, obj in ipairs(objects) do
+                    if obj and obj.image == bomb and not obj.isExploded then
+                        local bx = math.floor(obj.x / long) + 1
+                        local by = math.floor(obj.y / long) + 1
+                        
+                        local currentRadius = (obj.owner and obj.owner.FIRE) or 1
+
+                        table.insert(dangerousTilesForBot, {
+                            gx = bx,
+                            gy = by,
+                            fireRadius = currentRadius
+                        })
+                    end
+                end
+                
+                -- Ищем активное бушующее пламя в таблице кусочков взрыва (pieces)
+                for _, piece in ipairs(pieces) do
+                    if piece and piece.image == boom and piece.life and piece.life > 0 then
+                        local fx = math.floor(piece.x / long) + 1
+                        local fy = math.floor(piece.y / long) + 1
+                        
+                        table.insert(dangerousTilesForBot, {
+                            gx = fx,
+                            gy = fy,
+                            fireRadius = 0
+                        })
+                    end
+                end
+
+                -- Автоматический сбор баффов ботом
+                local currentBotGX = math.floor((gamer.x + long / 2) / long) + 1
+                local currentBotGY = math.floor((gamer.y + long / 2) / long) + 1
+                if MAP[currentBotGY] and MAP[currentBotGY][currentBotGX] == 3 then
+                    -- Стираем бафф с логической карты, бот его подобрал
+                    MAP[currentBotGY][currentBotGX] = 0
+                end
+
+                
+
+                -- 2. Запускаем ИИ бота
+                BotAI.think(gamer, dt, MAP, dangerousTilesForBot, function(botGridX, botGridY)
+                    if gamer.BOMBS > 0 then
+
+                        local oldX = gamer.x
+                        local oldY = gamer.y
+
+                        gamer.x = (botGridX - 1) * long
+                        gamer.y = (botGridY - 1) * long
+
+                        local success = Spawning(gamer)
+
+                        gamer.x = oldX
+                        gamer.y = oldY
+
+                        if not success then
+                            gamer.targetGridX = math.floor((gamer.x + long/2) / long) + 1
+                            gamer.targetGridY = math.floor((gamer.y + long/2) / long) + 1
+                        end
+                    end
+                end, {allPlayers = Players, buffs = buffs})
+            end 
+        end
+    end
+
     if GAME == "SETUP_CREATE" then button_textBox1.y = 120; button_textBox2.y = 240; button_textBox3.y = 360 end
     if GAME == "SETUP_JOIN" then button_textBox1.y = 60; button_textBox2.y = 180; button_textBox3.y = 300 end
     
@@ -555,6 +647,9 @@ function U.update(dt)
     
     for i, n in ipairs(NumbersButtons) do if n.active then SpriteNumbers[i] = spriteNumbersYes[i] else SpriteNumbers[i] = spriteNumbersNo[i] end end
     
+    for i, btn in ipairs(buttons) do if btn.isTouch then btn.opacity = 0.9 end end
+
+
     for j, player in ipairs(Players) do
         for i, buf in ipairs(buffs) do
             if checkCollision(player, buf) and not player.unbreakable then

@@ -148,7 +148,7 @@ function InitButtons()
         height = image_leave:getHeight(),
         image = image_leave,
         x = 0,
-        y = 350,
+        y = 470,
         scale = 1
     }
 
@@ -157,7 +157,7 @@ function InitButtons()
         height = image_continue:getHeight(),
         image = image_continue,
         x = 0,
-        y = 470,
+        y = 350,
         scale = 1
     }
 

@@ -23,7 +23,7 @@ function M.getMovement(player)
             end
         elseif player.controller == "gamepad" then
             for _, gp in ipairs(joysticks) do
-                if player.id == gp then
+                if player.idJoy == gp:getID() then
                     local ax, ay = gp:getAxis(1), gp:getAxis(2)
                     if gp:isGamepadDown("dpright") or ax > deadzone then dx = 1
                     elseif gp:isGamepadDown("dpleft") or ax < -deadzone then dx = -1
@@ -195,16 +195,18 @@ function M.ControlGui(player, joystick, btn, Typecntrl)
         end
     elseif GAME == "game" then
 
-        if (Typecntrl == "keyboard" and btn == "down" or btn == "s" or btn == "up" or btn == "w") or
-        (Typecntrl == "gamepad" and btn == "dpdown" or btn == "dpup") then
+        if blur.isPaused then
+            if (Typecntrl == "keyboard" and btn == "down" or btn == "s" or btn == "up" or btn == "w") or
+            (Typecntrl == "gamepad" and btn == "dpdown" or btn == "dpup") then
 
-            ButtonAnimation.position = (ButtonAnimation.position == 1) and 2 or 1
+                ButtonAnimation.position = (ButtonAnimation.position == 1) and 2 or 1
 
-        elseif (Typecntrl == "keyboard" and btn == "kpenter" or btn == "return" or btn == "space") or
-        (Typecntrl == "gamepad" and btn == "start" or btn == "a") then
+            elseif (Typecntrl == "keyboard" and btn == "kpenter" or btn == "return" or btn == "space") or
+            (Typecntrl == "gamepad" and btn == "start" or btn == "a") then
 
-            if ButtonAnimation.position == 1 then SUREEXIT()
-            elseif ButtonAnimation.position == 2 then blur.isPaused = false
+                if ButtonAnimation.position == 1 then SUREEXIT()
+                elseif ButtonAnimation.position == 2 then blur.isPaused = false
+                end
             end
         end
 
@@ -229,31 +231,40 @@ function M.ControlGui(player, joystick, btn, Typecntrl)
     ]]
     
     elseif GAME == "choose_character" then
+        print("Вызов GUI для игрока:", player.colorId, "Контроллер:", player.controller, "Кнопка:", btn)
         if player.playing then
-            if not player.ready then
-                if (player.controller == "keyboard" and (btn == "down" or btn == "s" or btn == "up" or btn == "w")) or
-                   (player.controller == "gamepad" and (btn == "dpdown" or btn == "dpup")) then
-                    player.positionButton = (player.positionButton == 1) and 2 or 1
-                end
-            end
-
-            if (player.controller == "keyboard" and (btn == "return" or btn == "kpenter")) or
-               (player.controller == "gamepad" and btn == "a") then
-                if player.positionButton == 1 then
-                    player.playing = false
-                    player.controller = "none"
-                    player.id = 0
-                    player.image = choose_NoPlayer_image
-                    NumberOfPlayers = NumberOfPlayers - 1
-                    if player.controller == "keyboard" then hasKeyboard = false else hasGamepad = false end
-                elseif player.positionButton == 2 then
-                    if not player.ready then
-                        player.ready = true
-                        ReadyPlayers = ReadyPlayers + 1
-                    else
-                        player.ready = false
-                        ReadyPlayers = ReadyPlayers - 1
+            if player.colorId == player.positionNumber then
+                if not player.ready then
+                    if (player.controller == "keyboard" and (btn == "down" or btn == "s" or btn == "up" or btn == "w")) or
+                    (player.controller == "gamepad" and (btn == "dpdown" or btn == "dpup")) then
+                        player.positionButton = (player.positionButton == 1) and 2 or 1
                     end
+                end
+
+                if (player.controller == "keyboard" and (btn == "return" or btn == "kpenter")) or
+                (player.controller == "gamepad" and btn == "a") then
+                    if player.positionButton == 1 then
+                        player.playing = false
+                        player.controller = "none"
+                        player.idJoy = 0
+                        player.Joy = 0
+                        player.image = choose_NoPlayer_image
+                        NumberOfPlayers = NumberOfPlayers - 1
+                        if player.controller == "keyboard" then hasKeyboard = false else hasGamepad = false end
+                    elseif player.positionButton == 2 then
+                        if not player.ready then
+                            player.ready = true
+                            ReadyPlayers = ReadyPlayers + 1
+                        else
+                            player.ready = false
+                            ReadyPlayers = ReadyPlayers - 1
+                        end
+                    end
+                end
+            else
+                if (Typecntrl == "keyboard" and (btn == "return" or btn == "kpenter")) or
+                (Typecntrl == "gamepad" and btn == "a") then
+                    registerPlayer("bot", nil, true, player.positionNumber)
                 end
             end
 
@@ -263,6 +274,30 @@ function M.ControlGui(player, joystick, btn, Typecntrl)
                     fade.state = "out"
                     fade.level = "change_modificator"
                     ButtonAnimation.position = 1
+                end
+            end
+
+            if (player.controller == "keyboard" and (btn == "left" or btn == "a")) or
+               (player.controller == "gamepad" and btn == "dpleft") then
+                if player.positionNumber == 1 then
+                    if NumberOfPlayers ~= 4 then player.positionNumber = 4 end
+                elseif player.colorId == player.positionNumber then
+                    if NumberOfPlayers ~= 4 then player.positionNumber = 4 end
+                elseif player.positionNumber == NumberOfPlayers + 1 then
+                    player.positionNumber = player.colorId
+                else
+                    player.positionNumber = player.positionNumber - 1
+                end
+            end
+
+            if (player.controller == "keyboard" and (btn == "right" or btn == "d")) or
+               (player.controller == "gamepad" and btn == "dpright") then
+                if player.positionNumber == 4 then
+                    player.positionNumber = player.colorId
+                elseif player.positionNumber == player.colorId then
+                    player.positionNumber = NumberOfPlayers + 1
+                else
+                    player.positionNumber = player.positionNumber + 1
                 end
             end
         end

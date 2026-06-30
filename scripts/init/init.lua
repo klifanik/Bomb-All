@@ -39,22 +39,26 @@ function initializationSprites()
     block_hard = love.graphics.newImage("sprites/blocks/hard.png") 
  
     -- 4. GUI И ИНТЕРФЕЙС
-    image_play_party    = love.graphics.newImage("sprites/gui/play_party.png")
-    image_play_local    = love.graphics.newImage("sprites/gui/play_local.png")
-    image_play_game     = love.graphics.newImage("sprites/gui/start.png")
-    image_create_server = love.graphics.newImage("sprites/localhost/create_server.png")
-    image_join_server   = love.graphics.newImage("sprites/localhost/join_server.png")
-    image_TextBox       = love.graphics.newImage("sprites/localhost/textBox.png")
-    image_TextBox_Active = love.graphics.newImage("sprites/localhost/textBoxActive.png")
-    image_play          = love.graphics.newImage("sprites/gui/play.png")
-    image_btn_select    = love.graphics.newImage("sprites/gui/select_btns.png")
-    image_btn_cancel    = love.graphics.newImage("sprites/gui/cancel_btns.png")
-    image_waitings      = love.graphics.newImage("sprites/gui/waitings.png")
-    image_sure_leave    = love.graphics.newImage("sprites/gui/sure_leave.png")
-    image_continue      = love.graphics.newImage("sprites/gui/continue.png")
-    image_leave         = love.graphics.newImage("sprites/gui/leave.png")
-    image_settings      = love.graphics.newImage("sprites/gui/settings.png")
-    background_wall     = love.graphics.newImage("sprites/gui/background.png")
+    image_play_local        = love.graphics.newImage("sprites/gui/play_local.png")
+    image_play_party        = love.graphics.newImage("sprites/gui/play_party.png")
+    image_play_game         = love.graphics.newImage("sprites/gui/start.png")
+    image_create_server     = love.graphics.newImage("sprites/localhost/create_server.png")
+    image_join_server       = love.graphics.newImage("sprites/localhost/join_server.png")
+    image_TextBox           = love.graphics.newImage("sprites/localhost/textBox.png")
+    image_TextBox_Active    = love.graphics.newImage("sprites/localhost/textBoxActive.png")
+    image_play              = love.graphics.newImage("sprites/gui/play.png")
+    image_btn_select        = love.graphics.newImage("sprites/gui/select_btns.png")
+    image_btn_cancel        = love.graphics.newImage("sprites/gui/cancel_btns.png")
+    image_waitings          = love.graphics.newImage("sprites/gui/waitings.png")
+    image_sure_leave        = love.graphics.newImage("sprites/gui/sure_leave.png")
+    image_continue          = love.graphics.newImage("sprites/gui/continue.png")
+    image_leave             = love.graphics.newImage("sprites/gui/leave.png")
+    image_settings          = love.graphics.newImage("sprites/gui/settings.png")
+    image_press_any_btn     = love.graphics.newImage("sprites/gui/press_btn.png")
+    image_how_to_add_bot    = love.graphics.newImage("sprites/gui/add_bot.png")
+    image_how_to_delete_bot = love.graphics.newImage("sprites/gui/delete_bot.png")
+    image_how_to_select_bot = love.graphics.newImage("sprites/gui/select_bot.png")
+    background_wall         = love.graphics.newImage("sprites/gui/background.png")
     
     -- 5. БАФФЫ
     local buffs = {"bomb", "fire", "skull", "kick", "line", "egg"}
@@ -69,7 +73,7 @@ function initializationSprites()
         _G["choose_" .. c .. "_image"] = love.graphics.newImage("sprites/choose character/" .. file .. ".png")
     end
 
-    local choose_types = {gamepad = "gamepad_player", keyboard = "keyboard_player", touch = "touch_player"}
+    local choose_types = {gamepad = "gamepad_player", keyboard = "keyboard_player", touch = "touch_player", bot = "bot_player"}
     for key, file in pairs(choose_types) do
         _G["choose_" .. key .. "_image"] = love.graphics.newImage("sprites/choose character/" .. file .. ".png")
     end
@@ -77,6 +81,7 @@ function initializationSprites()
     for i = 1, 4 do
         _G["choose_P" .. i] = love.graphics.newImage("sprites/choose character/P" .. i .. ".png")
         _G["choose_BOT" .. i] = love.graphics.newImage("sprites/choose character/BOT" .. i .. ".png")
+        _G["P" .. i .. "_choosen"] = love.graphics.newImage("sprites/choose character/P" .. i .. "choosen.png")
     end
 
     local choose_states = {"ready", "notready", "leave", "notleave"}

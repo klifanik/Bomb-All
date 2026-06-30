@@ -1,3 +1,5 @@
+local BotAI = require("scripts/Bot")
+
 function DrawGame()
 
     for _, i in ipairs(buffs) do
@@ -97,6 +99,7 @@ function D.draw(mx, my)
             elseif ButtonAnimation.position == 2 then ButtonAnimation.anim:draw(ButtonAnimation.Image, button_continue.x - 14, button_continue.y - 12.5, 0, 5.6, 4) end
 
         else
+            for _, p in ipairs(Players) do if p.bot then BotAI.draw(p) end end
             DrawGame()
         end
  
@@ -142,11 +145,14 @@ function D.draw(mx, my)
             love.graphics.draw(image_btn_cancel, 630, 620, 0, 0.75)
         end
 
-        if NumberOfPlayers < 2 then love.graphics.draw(image_waitings, (targetWidth / 2) - (image_waitings:getWidth() * 1 / 2), 620) end
+        if NumberOfPlayers < 2 then
+            love.graphics.draw(image_waitings, (targetWidth / 2) - (image_waitings:getWidth() * 0.7 / 2), 620, 0, 0.7)
+        end
 
-        local startX = 150
+        local startX = 140
         local spacing = 250
         local yPos = 100
+        local YforCTRLIMG = 0
 
         for i = 1, 4 do
             local p = Players[i]
@@ -157,16 +163,21 @@ function D.draw(mx, my)
             love.graphics.draw(charImg, x, yPos, 0, 0.5, 0.5)
             local w = choose_NoPlayer_image:getWidth() * 0.5
 
+            --love.graphics.rectangle("line", x, 100, 170, 215)
+
             if p and p.playing then
                 local ctrlImg = nil
                 if p.controller == "keyboard" then ctrlImg = choose_keyboard_image
                 elseif p.controller == "gamepad" then ctrlImg = choose_gamepad_image
                 elseif p.controller == "touch" then ctrlImg = choose_touch_image 
-                elseif p.controller == "none" then ctrlImg = choose_NoPlayer_image end
+                elseif p.controller == "none" then ctrlImg = choose_NoPlayer_image
+                elseif p.controller == "bot" then ctrlImg = choose_bot_image
+                end
 
                 local wc = ctrlImg:getWidth() * 0.3
                 local wk = choose_notready:getWidth() * 0.2
-                YforCTRLIMG = (p.controller == "keyboard") and yPos + 250 or (p.controller == "gamepad") and yPos + 240 or yPos + 220
+                YforCTRLIMG = (p.controller == "keyboard") and yPos + 250 or (p.controller == "gamepad") and yPos + 240 or
+                (p.controller == "touch") and yPos + 220 or (p.controller == "bot") and yPos + 260 or yPos + 230
                 
                 if ctrlImg then love.graphics.draw(ctrlImg, x + ((w - wc) / 2), YforCTRLIMG, 0, 0.3, 0.3) end
 
@@ -180,23 +191,99 @@ function D.draw(mx, my)
                     love.graphics.draw(choose_leave, lx, ly, 0, 0.2, 0.2)
                 end
 
-                if p.positionButton == 1 then ButtonAnimation.anim:draw(ButtonAnimation.Image, lx - 3, ly - 7, 0, 1.8, 1.8)
-                elseif p.positionButton == 2 then ButtonAnimation.anim:draw(ButtonAnimation.Image, rx - 7, ry - 7, 0, 1.8, 1.8)
+                if p.colorId == p.positionNumber then
+                    if p.positionButton == 1 then ButtonAnimation.anim:draw(ButtonAnimation.Image, lx - 3, ly - 7, 0, 1.8, 1.8)
+                    elseif p.positionButton == 2 then ButtonAnimation.anim:draw(ButtonAnimation.Image, rx - 7, ry - 7, 0, 1.8, 1.8)
+                    end
                 end
+
+                if p.colorId == 1 and p.colorId ~= p.positionNumber then
+                    if p.positionNumber == 1 then ChosenAnimationP1.anim:draw(ChosenAnimationP1.Image, 172, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 2 then ChosenAnimationP1.anim:draw(ChosenAnimationP1.Image, 422, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 3 then ChosenAnimationP1.anim:draw(ChosenAnimationP1.Image, 672, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 4 then ChosenAnimationP1.anim:draw(ChosenAnimationP1.Image, 922, yPos - 90, 0, 8)
+                    end
+                elseif p.colorId == 2 and p.colorId ~= p.positionNumber then
+                    if p.positionNumber == 1 then ChosenAnimationP2.anim:draw(ChosenAnimationP2.Image, 172, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 2 then ChosenAnimationP2.anim:draw(ChosenAnimationP2.Image, 422, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 3 then ChosenAnimationP2.anim:draw(ChosenAnimationP2.Image, 672, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 4 then ChosenAnimationP2.anim:draw(ChosenAnimationP2.Image, 922, yPos - 90, 0, 8)
+                    end
+                elseif p.colorId == 3 and p.colorId ~= p.positionNumber then
+                    if p.positionNumber == 1 then ChosenAnimationP3.anim:draw(ChosenAnimationP3.Image, 172, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 2 then ChosenAnimationP3.anim:draw(ChosenAnimationP3.Image, 422, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 3 then ChosenAnimationP3.anim:draw(ChosenAnimationP3.Image, 672, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 4 then ChosenAnimationP3.anim:draw(ChosenAnimationP3.Image, 922, yPos - 90, 0, 8)
+                    end
+                elseif p.colorId == 4 and p.colorId ~= p.positionNumber then
+                    if p.positionNumber == 1 then ChosenAnimationP4.anim:draw(ChosenAnimationP4.Image, 172, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 2 then ChosenAnimationP4.anim:draw(ChosenAnimationP4.Image, 422, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 3 then ChosenAnimationP4.anim:draw(ChosenAnimationP4.Image, 672, yPos - 90, 0, 8)
+                    elseif p.positionNumber == 4 then ChosenAnimationP4.anim:draw(ChosenAnimationP4.Image, 922, yPos - 90, 0, 8)
+                    end
+                end
+
+                if p.controller == "keyboard" then
+                    if checkClick(mx, my, {x = 140, y = 100, width = 170, height = 215, scale = 1}) then
+                        p.positionNumber = 1
+                    elseif checkClick(mx, my, {x = 390, y = 100, width = 170, height = 215, scale = 1}) then
+                        p.positionNumber = 2
+                    elseif checkClick(mx, my, {x = 640, y = 100, width = 170, height = 215, scale = 1}) then
+                        p.positionNumber = 3
+                    elseif checkClick(mx, my, {x = 890, y = 100, width = 170, height = 215, scale = 1}) then
+                        p.positionNumber = 4
+                    end
+                end
+
+                --[[if i == 1 then love.graphics.draw(Players[i].bot and choose_BOT1 or choose_P1, x, yPos - 80, 0, 0.4, 0.4)
+                elseif i == 2 then love.graphics.draw(Players[i].bot and choose_BOT2 or choose_P2, x, yPos - 80, 0, 0.4, 0.4)
+                elseif i == 3 then love.graphics.draw(Players[i].bot and choose_BOT3 or choose_P3, x, yPos - 80, 0, 0.4, 0.4)
+                elseif i == 4 then love.graphics.draw(Players[i].bot and choose_BOT4 or choose_P4, x, yPos - 80, 0, 0.4, 0.4) end]]
             end
 
-            if i == 1 then love.graphics.draw(choose_P1, x, yPos - 80, 0, 0.4, 0.4)
-            elseif i == 2 then love.graphics.draw(choose_P2, x, yPos - 80, 0, 0.4, 0.4)
-            elseif i == 3 then love.graphics.draw(choose_P3, x, yPos - 80, 0, 0.4, 0.4)
-            elseif i == 4 then love.graphics.draw(choose_P4, x, yPos - 80, 0, 0.4, 0.4) end
+            if p and not p.playing then love.graphics.draw(image_press_any_btn, x + ((w - image_press_any_btn:getWidth()*0.45) / 2), 350, 0, 0.45) end
+        end
+
+        local hCount = 0
+        local bCount = 0
+
+        for i, player in ipairs(Players) do
+            local x = startX + (i-1) * spacing
+            local imageToDraw
+
+            if player.playing then
+                if player.bot then
+                    bCount = bCount + 1
+                    imageToDraw = ChooseBots[bCount]
+                    
+                    local isSelectedByHuman = false
+                    for _, p in ipairs(Players) do
+                        if not p.bot and p.positionNumber == player.colorId then
+                            isSelectedByHuman = true
+                            break
+                        end
+                    end
+
+                    if not isSelectedByHuman then
+                        love.graphics.draw(imageToDraw, x, yPos - 80, 0, 0.4)
+                    end
+
+                else
+                    hCount = hCount + 1
+                    imageToDraw = ChooseHumans[hCount]
+                    love.graphics.draw(imageToDraw, x, yPos - 80, 0, 0.4)
+                end
+            end
         end
 
         for _, p in ipairs(Players) do
             if p.playing and p.controller == "keyboard" and not p.ready then
                 if checkClick(mx, my, p.btnReady) then
                     p.positionButton = 2
+                    p.positionNumber = p.colorId
                 elseif checkClick(mx, my, p.btnLeave) then
                     p.positionButton = 1
+                    p.positionNumber = p.colorId
                 end
             end
         end
@@ -530,8 +617,9 @@ LOVE(love2d), вы можете скачать исходный код игры
 на GitHub, и попытаться помочь в разработке игры]], 150, 220)
     end
 
+    --love.graphics.print()
+
     if myServer then love.graphics.print(myServer.playersCount, 100, 100) end
-    love.graphics.setColor(1, 1, 1)
 end
 
 return D
